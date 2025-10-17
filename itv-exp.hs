@@ -53,7 +53,7 @@ main = do
   -- let
   --   !widthProfile = fromList [(s, w * 0.1) | s <- keys hA,
   --                             let w = (toUp hA b s) - s]
-  
+
   -- Plot the distribution with the interval
   let lineTitle name strength count =
         format "{0}.tv(s={1}, n={2})" [name, show strength, show count]
@@ -72,4 +72,3 @@ main = do
     False True
 
   -- threadDelay 100000000000
-
