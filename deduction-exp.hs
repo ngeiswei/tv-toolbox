@@ -55,7 +55,7 @@ deductionConsistency sA sB sAB =
 -- sAC = [sAB.sBC + ((1-sAB)(sC - sBsBC))/(1-sB)]
 deductionFormula :: MyFloat -> MyFloat -> MyFloat -> MyFloat -> MyFloat -> MyFloat
 deductionFormula sA sB sC sAB sBC =
-  let result = 
+  let result =
         if 0.9999 < sB
         then sC                         -- avoid division by zero
         else sAB * sBC + ((1 - sAB) * (sC - sB * sBC) / (1 - sB))

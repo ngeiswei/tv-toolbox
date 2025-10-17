@@ -41,7 +41,7 @@ module TVToolBox (-- Types
                   optimize,
                   optimizeDbg
                  ) where
-                  
+
 import Math.Gamma (gamma, lnGamma)
 import Data.Maybe (fromJust)
 import Data.Ratio ((%))
