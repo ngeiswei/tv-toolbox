@@ -13,6 +13,7 @@ import Text.Format (format)
 import Graphics.Gnuplot.Simple (plotPathStyle, plotPathsStyle,
                                 Attribute(Title, XLabel, YLabel, XRange, PNG),
                                 PlotStyle, defaultStyle,
+                                plotType, PlotType(Lines, Steps, Boxes),
                                 lineSpec, LineSpec(CustomStyle),
                                 LineAttr(LineTitle))
 
@@ -31,15 +32,18 @@ histogramToPdfMap nbr_bins hist =
         n = fromIntegral nbr_bins
         c = n / s
 
--- Plot histogram
-plotMaps :: Bool -> Bool -> String -> [(String, (Map Double Double))] -> IO ()
-plotMaps save zoom title names_maps =
-  plotPathsStyle attributes (Prelude.map fmt names_maps)
-  where attributes = [Title title, XLabel "Probability", YLabel "Density"]
-                     ++ (if zoom then [] else [XRange (0.0, 1.0)])
-                     ++ (if save then [PNG (title ++ ".png")] else [])
-        fmt (n, m) = (defaultStyle {lineSpec = CustomStyle [LineTitle n]},
-                      (Data.Map.toList m))
+-- Plot histogram.  Take a list of GnuPlot attributes, a title and a
+-- list of triple (name, plot type, map).  It automatically add a
+-- "Probability" XLabel and a "Density" YLabel to the list of
+-- attributes.
+plotMaps :: [Attribute] -> String -> [(String, PlotType, (Map Double Double))] -> IO ()
+plotMaps attributes title names_types_maps =
+  plotPathsStyle attributes_xt (Prelude.map fmt names_types_maps)
+  where attributes_xt = [Title title, XLabel "Probability", YLabel "Density"]
+                        ++ attributes
+        fmt (n, t, m) = (defaultStyle {plotType = t,
+                                       lineSpec = CustomStyle [LineTitle n]},
+                         (Data.Map.toList m))
 
 -- Produce histogram with n bins from a sample
 sampleToHistogram :: Integer -> [Double] -> (Histogram Double)
@@ -86,10 +90,8 @@ main = do
     seed = 0
     alpha = 2
     beta = 5
-    smp_size = 1000000 -- Number of samples
-    nbr_bins = 3       -- NEXT: when nbr_bins is low what to do?
-                       -- Should the bin function be shifted by
-                       -- half-bin to the right?
+    smp_size = 10000 -- Number of samples
+    nbr_bins = 40
     -- Define beta distribution
     bd = betaDistr alpha beta
     cdf_half = cumulative bd 0.5
@@ -113,12 +115,12 @@ main = do
     -- Produce PDF map for plotting
     fit_map = bdToPdfMap nbr_bins fit_bd
   plotMaps
-    False False
+    []
     (format "Sample vs Fit (alpha={0}, beta={1}, bins={2})"
      [show alpha, show beta, show nbr_bins])
-    [((format "Sample (size={0})" [show smp_size]), smp_map),
+    [((format "Sample (size={0})" [show smp_size]), Boxes, smp_map),
      ((format "Fitted (alpha={0}, beta={1})" [show smp_alpha, show smp_beta]),
-      fit_map)]
+      Lines, fit_map)]
   print (format
          ("Beta Distribution alpha = {0}, beta = {1}, cdf_half = {2}"
           ++ ", normalized_histo = {3}"
