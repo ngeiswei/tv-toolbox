@@ -88,7 +88,7 @@ main = do
   let
     -- Constants
     seed = 0
-    alpha = 2
+    alpha = 20
     beta = 5
     smp_size = 10000 -- Number of samples
     nbr_bins = 40
@@ -116,9 +116,9 @@ main = do
     fit_map = bdToPdfMap nbr_bins fit_bd
   plotMaps
     []
-    (format "Sample vs Fit (alpha={0}, beta={1}, bins={2})"
+    (format "Sampled vs Fitted (alpha={0}, beta={1}, bins={2})"
      [show alpha, show beta, show nbr_bins])
-    [((format "Sample (size={0})" [show smp_size]), Boxes, smp_map),
+    [((format "Sampled (size={0})" [show smp_size]), Boxes, smp_map),
      ((format "Fitted (alpha={0}, beta={1})" [show smp_alpha, show smp_beta]),
       Lines, fit_map)]
   print (format
