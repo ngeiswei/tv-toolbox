@@ -25,6 +25,7 @@ module TVToolBox (-- Types
                   pdf_only_beta,
                   pdf_chapter_4,
                   toDist,
+                  bin,
                   discretize,
                   trim,
                   normalize,
@@ -39,7 +40,8 @@ module TVToolBox (-- Types
                   -- General/Math
                   integerMiddle,
                   optimize,
-                  optimizeDbg
+                  optimizeDbg,
+                  square
                  ) where
 
 import Math.Gamma (gamma, lnGamma)
@@ -197,7 +199,9 @@ add = unionWith (+)
 average :: Dist -> Dist -> Dist
 average hP hQ = scale 0.5 (add hP hQ)
 
--- Return the nearest (lower) bin corresponding to a strength
+-- Round up a floating point number to the nearest (lower) bin.  The
+-- first argument is the number bins and the second argument is the
+-- number to round up.  The number is assumed to be within [0, 1].
 bin :: Integer -> MyFloat -> MyFloat
 bin n s = fromRational ((round (s * (fromInteger n))) % n)
 
@@ -470,3 +474,7 @@ optimizeDbg fun jump step low up guess =
 mapKeys_fix f m = fromMap (foldrWithKey f' empty m')
     where m' = toMap m
           f' k a b = insertWith (++) (f k) a b
+
+-- Square a number
+square :: Double -> Double
+square d = d * d
