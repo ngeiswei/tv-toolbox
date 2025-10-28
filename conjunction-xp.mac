@@ -58,3 +58,7 @@ draw2d(xrange = [0, 1], explicit(gpcpr(70, 0.8, 0.2, x), x, 0, 0.199), color=red
 
 /* Simplfy simp_stpcpr (sort of) */
 simplify(simp_stpcpr(n, pa, pb, x));
+expand(simp_stpcpr(n, pa, pb, x));
+demoivre(simp_stpcpr(n, pa, pb, x));
+exponentialize(simp_stpcpr(n, pa, pb, x));
+radcan(simp_stpcpr(n, pa, pb, x));
