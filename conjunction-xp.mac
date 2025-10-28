@@ -55,3 +55,6 @@ draw2d(xrange = [0, 1], explicit(stpcpr(70, 0.8, 0.2, x), x, 0, 0.2));
 
 /* Draw Pr(P_AB <= x) using both gamma and Stirling forms */
 draw2d(xrange = [0, 1], explicit(gpcpr(70, 0.8, 0.2, x), x, 0, 0.199), color=red, explicit(simp_stpcpr(70, 0.8, 0.2, x), x, 0, 0.199));
+
+/* Simplfy simp_stpcpr (sort of) */
+simplify(simp_stpcpr(n, pa, pb, x));
