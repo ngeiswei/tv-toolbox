@@ -1,0 +1,57 @@
+load(draw);
+
+/* Define probability of |A ∧ B| = k using combinations */
+cpr(n, a, b, k) := binomial(a, k) * binomial(n - a, b -k) / binomial(n, b);
+float(cpr(100, 80, 20, 10));
+
+/* Like cpr but uses probabilities for A, B and |A ∧ B| instead of cardinality */
+pcpr(n, pa, pb, x) := binomial(n*pa, n*x) * binomial(n*(1 - pa), n*(pb - x)) / binomial(n, n*pb);
+pcpr(70, 0.8, 0.2, 0.1);
+/* limit(pcpr(n, 08, 0.2, 0.1), n, inf); */
+
+/* Like cpr but uses factorials instead */
+fpcpr(n, pa, pb, x) := (factorial(n*pa) * factorial(n*(1-pa)) * factorial(n*pb) * factorial(n*(1-pb))) / (factorial(n*x) * factorial(n*(pa-x)) * factorial(n*(pb-x)) * factorial(n*(1-pa-pb+x)) * factorial(n));
+fpcpr(70, 0.8, 0.2, 0.1);
+/* limit(fpcpr(n, 0.8, 0.2, 0.1), n, inf); */
+
+/* Like fpcpr but uses gamma function instead */
+gpcpr(n, pa, pb, x) := (gamma(n*pa + 1) * gamma(n*(1-pa) + 1) * gamma(n*pb + 1) * gamma(n*(1-pb) + 1)) / (gamma(n*x + 1) * gamma(n*(pa-x) + 1) * gamma(n*(pb-x) + 1) * gamma(n*(1-pa-pb+x) + 1) * gamma(n + 1));
+gpcpr(70, 0.8, 0.2, 0.1);
+/* limit(gpcpr(n, 0.8, 0.2, 0.1), n, inf); */
+
+/* Define Stirling approximation */
+stirling(n) := sqrt(2*%pi*n)*(n/%e)**n;
+float(stirling(70));
+
+/* Like gpcpr but uses Stirling approximation */
+stpcpr(n, pa, pb, x) := (stirling(n*pa) * stirling(n*(1-pa)) * stirling(n*pb) * stirling(n*(1-pb))) / (stirling(n*x) * stirling(n*(pa-x)) * stirling(n*(pb-x)) * stirling(n*(1-pa-pb+x)) * stirling(n));
+float(stpcpr(70, 0.8, 0.2, 0.1));
+
+/* Simplify Stirling approximation, remove any factors that may cancel out */
+/* simp_stirling(n) := sqrt(n)*(n/%e)**n; */
+simp_stirling(n) := sqrt(n)*n**n;
+
+/* Like stpcpr but uses simp_stirling */
+simp_stpcpr(n, pa, pb, x) := (simp_stirling(n*pa) * simp_stirling(n*(1-pa)) * simp_stirling(n*pb) * simp_stirling(n*(1-pb))) / (simp_stirling(n*x) * simp_stirling(n*(pa-x)) * simp_stirling(n*(pb-x)) * simp_stirling(n*(1-pa-pb+x)) * simp_stirling(n) * sqrt(2*%pi));
+float(simp_stpcpr(70, 0.8, 0.2, 0.1));
+
+/* Manually simplified stpcpr */
+/* NEXT: figure out what is wrong here */
+man_simp_stpcpr(n, pa, pb, x) := (pa**(n*pa+0.5) * (1-pa)**(n*(1-pa)+0.5) * pb**(n*pb+0.5) * (1-pb)**(n*(1-pb)+0.5))
+                        / (x**(n*x+0.5) * (pa-x)**(n*(pa-x)+0.5) * (pb-x)**(n*(pb-x)+0.5) * (1-pa-pb+x)**(n*(1-pa-pb+x)+0.5) * (sqrt(2*%pi)*n)**(n+0.5));
+float(man_simp_stpcpr(70, 0.8, 0.2, 0.1));
+
+/* Calculate Pr(P_AB <= 0.2) */
+sum(gpcpr(70, 0.8, 0.2, i/70), i, 0, 70*0.2);
+
+/* Attempt to derive the limit of Pr(P_AB <= 0.2) */
+/* limit(sum(gpcpr(n, 0.8, 0.2, i/n), i, 0, n*0.2), n, inf); */
+
+/* Draw Pr(P_AB <= x) using gamma form */
+draw2d(xrange = [0, 1], explicit(gpcpr(70, 0.8, 0.2, x), x, 0, 0.2));
+
+/* Draw Pr(P_AB <= x) using Stirling form */
+draw2d(xrange = [0, 1], explicit(stpcpr(70, 0.8, 0.2, x), x, 0, 0.2));
+
+/* Draw Pr(P_AB <= x) using both gamma and Stirling forms */
+draw2d(xrange = [0, 1], explicit(gpcpr(70, 0.8, 0.2, x), x, 0, 0.199), color=red, explicit(simp_stpcpr(70, 0.8, 0.2, x), x, 0, 0.199));
