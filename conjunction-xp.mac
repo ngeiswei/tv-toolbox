@@ -118,3 +118,5 @@ float(sum(man_simp_stpcpr(70, 0.8, 0.2, i/70), i, 1, 69*0.2));
 
 /* NEXT: maybe rename much things, like man_simp_stpcpr by f, pa by p,
          pb by q, etc. */
+
+/* NEXT: maybe attempt to come up with Riemann integral with pa=pb=1/2 */
