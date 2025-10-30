@@ -165,7 +165,7 @@ https://feb.kuleuven.be/public/u0003131/wbt23/wxmaxima/wxm_intro/numer_float_bfl
 */
 
 /* Draw Pr(P_AB <= x) Stirling forms and unscaled beta fit */
-draw2d(xrange = [0, 1], color=green, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=blue, explicit(pdf_beta(x, 44*1.3, 234*1.3)/70, x, 0, 1));
+draw2d(xrange = [0, 1], color=red, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=green, explicit(pdf_beta(x, 44*1.3, 234*1.3)/70, x, 0, 1));
 
 /* Draw Pr(P_AB <= x) using Stirling forms and beta fit (scaling) */
 draw2d(xrange = [0, 1], color=green, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=blue, explicit(pdf_scaled_beta(x, 10, 5, 0.8, 0.2), x, 0, 1));
