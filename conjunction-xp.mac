@@ -190,13 +190,41 @@ float(sum(padded_mstpr(70, 0.8, 0.2, i/70), i, 0, 70));
 float(sum(pdf_beta(i/70, 5, 10)/70, i, 0, 70));
 float(sum(pdf_scaled_beta(i/70, 5, 10, 0.8, 0.8)/70, i, 0, 70));
 
+/* NEXT: use discrete distribution instead of re-inventing the wheel
+https://maxima.sourceforge.io/docs/manual/Package-distrib.html#Functions-and-Variables-for-discrete-distributions
+*/
+
+/* NEXT: use Stirling package instead of re-inventing the wheel
+https://maxima.sourceforge.io/docs/manual/Package-stirling.html#Package-stirling
+*/
+
 /* NEXT: try to fit a generalized beta distribution */
 
 /* NEXT: plot various components of mstpr while varying pa, pb and x.
          The goal is to understand how their powers of n should
          evolve, such as is it greater than 1. */
 
+/* NEXT: Look into the simplification package
+https://maxima.sourceforge.io/docs/manual/Package-simplification.html#Package-simplification
+*/
+
 /* NEXT: Study how to simplify the sum of mstpr, or gpcpr who knows */
+
+/* NEXT: Possibly study the stats package
+https://maxima.sourceforge.io/docs/manual/Package-stats.html#Package-stats
+*/
+
+/* NEXT: Possibly study the Zeilberger package
+https://maxima.sourceforge.io/docs/manual/Package-zeilberger.html#Package-zeilberger
+*/
+
+/* NEXT: Possibly study the Integration package
+https://maxima.sourceforge.io/docs/manual/Integration.html#Integration
+*/
+
+/* NEXT: Possibly study Sums, Products and Series
+https://maxima.sourceforge.io/docs/manual/Sums-Products-and-Series.html#Sums-Products-and-Series
+*/
 
 /* NEXT: reformulate mstpr using δt instead of n */
 
