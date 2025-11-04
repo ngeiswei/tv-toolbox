@@ -702,24 +702,25 @@ Or as rendered by Maxima
 
 ![](plots/PAB-Stirling-formula.png)
 
-This is important because it allows us to calculate `Pr(pAB = x)` for
-very high values of n.
+This allows us to calculate `Pr(pAB = x)` for very high values of n.
 
-Finally we can plot these distrolets first using combinations varying
-`n` from 50 to 400.
+Let us start by plotting distrolets for `pA=pB=0.5` using combinations
+varying `n` from 50 to 400.
 
 ![](plots/conjunction-Gamma-n_400.png)
 
 Already we can see a clear trend where the distrolet is shrinking as
 `n` goes up.
 
-Then by using Stirling approximation, we can push `n` much larger and
+Then, using Stirling approximation, we can push `n` much larger and
 see that the distrolet tends, at least visually, to a Dirac delta
 distribution.
 
 ![](plots/conjunction-Stirling-n_400.png)
 ![](plots/conjunction-Stirling-n_4000.png)
 ![](plots/conjunction-Stirling-n_40000.png)
+![](plots/conjunction-Stirling-n_400000.png)
+![](plots/conjunction-Stirling-n_4000000.png)
 
 I want to provided an analytical proof of it, but I think it is
 already convincing enough that it converges to a Dirac delta
