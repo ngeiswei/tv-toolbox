@@ -2,6 +2,9 @@
 load(draw)$
 load(distrib)$
 
+/* Big float precision */
+fpprec:51;
+
 /* Specify various ranges
 - Basic -
 0 <= pa <= 1
@@ -20,7 +23,7 @@ pb-1 <= max(pb-pa, 0) <= pb-x <= max(1-pa, pb) <= pb
 lower(pa, pb) := max(pa+pb-1, 0);
 upper(pa, pb) := min(pa, pb);
 dst(pa, pb) := upper(pa, pb) - lower(pa, pb);
-lower(0.8, 0.8);
+lower(bfloat(0.8), bfloat(0.8));
 upper(0.8, 0.8);
 
 /* Scale x in [0,1] to [lower(pa, pb), upper(pa, pb)], and vice versa. */
@@ -49,12 +52,12 @@ pcpr(70, 0.8, 0.2, 0.1);
 
 /* Like cpr but uses factorials instead */
 fpr(n, pa, pb, x) := (factorial(n*pa) * factorial(n*(1-pa)) * factorial(n*pb) * factorial(n*(1-pb))) / (factorial(n*x) * factorial(n*(pa-x)) * factorial(n*(pb-x)) * factorial(n*(1-pa-pb+x)) * factorial(n));
-fpcpr(70, 0.8, 0.2, 0.1);
+fpr(70, 0.8, 0.2, 0.1);
 /* limit(fpr(n, 0.8, 0.2, 0.1), n, inf); */
 
 /* Like fpcpr but uses gamma function instead */
 gpr(n, pa, pb, x) := (gamma(n*pa + 1) * gamma(n*(1-pa) + 1) * gamma(n*pb + 1) * gamma(n*(1-pb) + 1)) / (gamma(n*x + 1) * gamma(n*(pa-x) + 1) * gamma(n*(pb-x) + 1) * gamma(n*(1-pa-pb+x) + 1) * gamma(n + 1));
-g(70, 0.8, 0.2, 0.1);
+gpr(70, 0.8, 0.2, 0.1);
 /* limit(g(n, 0.8, 0.2, 0.1), n, inf); */
 
 /* Define Stirling approximation */
@@ -63,7 +66,7 @@ float(stirling(70));
 
 /* Like gpcpr but uses Stirling approximation */
 stpr(n, pa, pb, x) := (stirling(n*pa) * stirling(n*(1-pa)) * stirling(n*pb) * stirling(n*(1-pb))) / (stirling(n*x) * stirling(n*(pa-x)) * stirling(n*(pb-x)) * stirling(n*(1-pa-pb+x)) * stirling(n));
-float(st(70, 0.8, 0.2, 0.1));
+float(stpr(70, 0.8, 0.2, 0.1));
 
 /* Simplify Stirling approximation, remove any factors that may cancel out */
 /* simp_stirling(n) := sqrt(n)*(n/%e)**n; */
@@ -92,12 +95,13 @@ mstpr(n, pa, pb, x) := 1/(sqrt(2*%pi)) * ((pa**(pa+1/(2*n)) * pb**(pb+1/(2*n)) *
 mstpr(n, pa, pb, x) := (sqrt(pa*pb*(1-pa)*(1-pb)) / (sqrt(2*%pi*n*(pa-x)*(pb-x)*x*(x-pb-pa+1)))) * ((pa**pa * pb**pb * (1-pa)**(1-pa) * (1-pb)**(1-pb)) / ((pa-x)**(pa-x) * (pb-x)**(pb-x) * x**x * (x-pb-pa+1)**(x-pb-pa+1)))**n;
 float(mstpr(70, 0.8, 0.2, 0.1));
 
-/* Like mst but pad with zero outside of valid x range */
+/* Like gpr and mstpr but pad with zero outside of valid x range */
 declare(epsilon, constant);
 epsilon: 1e-3;
+padded_gpr(n, pa, pb, x) := if x <= (lower(pa, pb) + epsilon) or (upper(pa, pb) - epsilon) <= x then 0.0 else float(gpr(n, pa, pb, x));
 padded_mstpr(n, pa, pb, x) := if x <= (lower(pa, pb) + epsilon) or (upper(pa, pb) - epsilon) <= x then 0.0 else float(mstpr(n, pa, pb, x));
 
-/* Derive limit of man_simp_stpcpr */
+/* Derive limit of mstpr */
 limit(mstpr(n, pa, pb, x), n, inf);
 
 /* Derive limit of n^(1/(2*n)) (it tends to 1) */
@@ -110,18 +114,32 @@ limit(n**(1/(2*n)), n, inf);
 riemann_sum_mean(f, l, u) := sum(i*f(i), i, l, u) / (u - l);
 
 /* Calculate the variance of a Riemann sum */
-riemann_sum_variance(f, l, u) := sum(f(i)*(i/(u-l) - riemann_sum_mean(f, l, u))**2, i, l, u) / (u - l);
+riemann_sum_variance(f, l, u) := block([r, m], r: u - l, m: riemann_sum_mean(f, l, u), sum(f(i)*(i/r - m)**2, i, l, u) / r);
 
 /* Test Riemann sum mean and variance */
-rmstpr(i) := float(padded_mstpr(70, 0.8, 0.2, i/70));
-riemann_sum_mean(rmstpr, 0, 70);
-riemann_sum_variance(rmstpr, 0, 70);
+rmstpr_50(i) := float(padded_mstpr(50, 0.5, 0.5, i/50));
+rmstpr_100(i) := float(padded_mstpr(100, 0.5, 0.5, i/100));
+rmstpr_200(i) := float(padded_mstpr(200, 0.5, 0.5, i/200));
+rmstpr_400(i) := bfloat(padded_mstpr(bfloat(400), bfloat(0.5), bfloat(0.5), bfloat(i/400)));
+rmstpr_800(i) := bfloat(padded_mstpr(bfloat(800), bfloat(0.5), bfloat(0.5), bfloat(i/800)));
+riemann_sum_mean(rmstpr_50, 0, 50);
+riemann_sum_variance(rmstpr_50, 0, 50);
+riemann_sum_mean(rmstpr_100, 0, 100);
+riemann_sum_variance(rmstpr_100, 0, 100);
+riemann_sum_mean(rmstpr_200, 0, 200);
+riemann_sum_variance(rmstpr_200, 0, 200);
+riemann_sum_mean(rmstpr_400, 0, 400);
+riemann_sum_variance(rmstpr_400, 0, 400);
+riemann_sum_mean(rmstpr_800, 0, 800);
+riemann_sum_variance(rmstpr_800, 0, 800);
 
 /* Calculate alpha and beta parameters of a fitting unscaled beta
 distribution given the empirical mean and variance of another
 distribution.  Return -1 if precondition is not met. */
 fit_alpha(m, v) := float(if v < m*(1-m) then ((m*(1-m)/v)-1)*m else -1);
 fit_beta(m, v) := float(if v < m*(1-m) then ((m*(1-m)/v)-1)*(1-m) else -1);
+
+/* Fit alpha for mean=0.2528 and variance=1.3202e-5 obtained with padded_mstpr(70, 0.5, 0.5, i/70)
 fit_alpha(0.16055, 4.834e-6); /* outputs 4476 */
 fit_beta(0.16055, 4.834e-6); /* outputs 23403 */
 
@@ -156,19 +174,17 @@ draw2d(xrange = [0, 1], explicit(padded_mstpr(70, 0.5, 0.5, x), x, 0, 1));
 /* Draw scaled beta distribution */
 draw2d(xrange = [0, 1], explicit(pdf_scaled_beta(x, 10, 5, 0.8, 0.8), x, 0, 1));
 
-/* NEXT: figure out the Y scale of pdf_beta and pdf_scaled_beta vs
-padded_mst.  Answer: divide pdf_beta and pdf_scaled_beta by n */
-
-/* NEXT: use big float, see
-https://home.csulb.edu/~woollett/mbe9bfloat.pdf
-https://feb.kuleuven.be/public/u0003131/wbt23/wxmaxima/wxm_intro/numer_float_bfloat.html
-*/
-
 /* Draw Pr(P_AB <= x) Stirling forms and unscaled beta fit */
 draw2d(xrange = [0, 1], color=red, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=green, explicit(pdf_beta(x, 44*1.3, 234*1.3)/70, x, 0, 1));
 
 /* Draw Pr(P_AB <= x) using Stirling forms and beta fit (scaling) */
 draw2d(xrange = [0, 1], color=green, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=blue, explicit(pdf_scaled_beta(x, 10, 5, 0.8, 0.2), x, 0, 1));
+
+/* Draw Pr(P_AB <= x) using Stirling forms with different n */
+draw2d(title="Pr(p_{AB} <= x) with p_A=p_B=0.5 using Stirling approximation", xlabel="x", ylabel="density", xrange=[0, 1], color=green, key="n=50", explicit(padded_mstpr(50, 0.5, 0.5, x)*50, x, 0, 1), color=blue, key="n=100", explicit(padded_mstpr(100, 0.5, 0.5, x)*100, x, 0, 1), color=red, key="n=200", explicit(padded_mstpr(200, 0.5, 0.5, x)*200, x, 0, 1), color=purple, key="n=400", explicit(padded_mstpr(bfloat(400), bfloat(0.5), bfloat(0.5), x)*bfloat(400), x, bfloat(0), bfloat(1)));
+
+/* Draw Pr(P_AB <= x) using Stirling forms with different n, using gpr instead of mstpr */
+draw2d(title="Pr(p_{AB} <= x) with p_A=p_B=0.5 using 𝛤 functions", xlabel="x", ylabel="density", xrange=[0, 1], color=green, key="n=50", explicit(padded_gpr(50, 0.5, 0.5, x)*50, x, 0, 1), color=blue, key="n=100", explicit(padded_gpr(100, 0.5, 0.5, x)*100, x, 0, 1), color=red, key="n=200", explicit(padded_gpr(bfloat(200), bfloat(0.5), bfloat(0.5), x)*bfloat(200), x, 0, 1), color=purple, key="n=400", explicit(padded_gpr(bfloat(400), bfloat(0.5), bfloat(0.5), x)*bfloat(400), x, bfloat(0), bfloat(1)));
 
 /* Draw x^x */
 draw2d(xrange = [-1, 1], explicit(x**x, x, -1, 1));
