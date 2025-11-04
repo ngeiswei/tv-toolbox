@@ -722,6 +722,6 @@ distribution.
 ![](plots/conjunction-Stirling-n_400000.png)
 ![](plots/conjunction-Stirling-n_4000000.png)
 
-I want to provided an analytical proof of it, but I think it is
+I wanted to provide an analytical proof of it, but I think it is
 already convincing enough that it converges to a Dirac delta
 distribution of mean `pAB=pA*pB`.
