@@ -1,0 +1,247 @@
+/* Load packages */
+load(draw)$
+load(distrib)$
+
+/* Big float precision */
+fpprec:51;
+
+/* Specify various ranges
+- Basic -
+0 <= pa <= 1
+0 <= pb <= 1
+0 <= max(pa+pb-1, 0) <= x <= min(pa, pb) <= 1
+- Derived -
+0 <= 1-pa <= 1
+0 <= 1-pb <= 1
+-1 <= max(-pa, -pb) <= -x <= max(1-pa-pb, 0) <= 0
+pa-1 <= max(0, pa-pb) <= pa-x <= max(1-pb, pa) <= pa
+pb-1 <= max(pb-pa, 0) <= pb-x <= max(1-pa, pb) <= pb
+1-pb-pa <= max(0, 1-pb-pa) <= x-pb-pa+1 <= min(1-pb, 1-pa) <= 2-pb-pa
+*/
+
+/* Calculate lower and upper bounds of x w.r.t. pa and pb */
+lower(pa, pb) := max(pa+pb-1, 0);
+upper(pa, pb) := min(pa, pb);
+dst(pa, pb) := upper(pa, pb) - lower(pa, pb);
+lower(bfloat(0.8), bfloat(0.8));
+upper(0.8, 0.8);
+
+/* Scale x in [0,1] to [lower(pa, pb), upper(pa, pb)], and vice versa. */
+scale(x, pa, pb) := x*dst(pa, pb) + lower(pa, pb);
+scale(0.5, 0.8, 0.8); /* should return 0.7 */
+iscale(x, pa, pb) := (x - lower(pa, pb)) / dst(pa, pb);
+iscale(0.7, 0.8, 0.8); /* should return 0.5 */
+
+/* Pdf of Scaled beta distribution so that it is squeezed within the
+lower and upper bound defined by pa and pb. */
+pdf_scaled_beta(x, alpha, beta, pa, pb) := if (x < lower(pa, pb) or upper(pa, pb) < x) then 0 else pdf_beta(iscale(x, pa, pb), alpha, beta) / dst(pa, pb);
+pdf_scaled_beta(0.7, 1, 1, 0.8, 0.8);
+
+/* Attempt to solve a few inequalities */
+load(to_poly_solve)$
+fourier_elim([0 <= pa, pa <= 1, 0 <= pb, pb <= 1], [pa, pb]);
+
+/* Define probability of |A ∧ B| = k using combinations */
+cpr(n, a, b, k) := binomial(a, k) * binomial(n - a, b -k) / binomial(n, b);
+float(cpr(100, 80, 20, 10));
+
+/* Like cpr but uses probabilities for A, B and |A ∧ B| instead of cardinality */
+pcpr(n, pa, pb, x) := binomial(n*pa, n*x) * binomial(n*(1 - pa), n*(pb - x)) / binomial(n, n*pb);
+pcpr(70, 0.8, 0.2, 0.1);
+/* limit(pcpr(n, 08, 0.2, 0.1), n, inf); */
+
+/* Like cpr but uses factorials instead */
+fpr(n, pa, pb, x) := (factorial(n*pa) * factorial(n*(1-pa)) * factorial(n*pb) * factorial(n*(1-pb))) / (factorial(n*x) * factorial(n*(pa-x)) * factorial(n*(pb-x)) * factorial(n*(1-pa-pb+x)) * factorial(n));
+fpr(70, 0.8, 0.2, 0.1);
+/* limit(fpr(n, 0.8, 0.2, 0.1), n, inf); */
+
+/* Like fpcpr but uses gamma function instead */
+gpr(n, pa, pb, x) := (gamma(n*pa + 1) * gamma(n*(1-pa) + 1) * gamma(n*pb + 1) * gamma(n*(1-pb) + 1)) / (gamma(n*x + 1) * gamma(n*(pa-x) + 1) * gamma(n*(pb-x) + 1) * gamma(n*(1-pa-pb+x) + 1) * gamma(n + 1));
+gpr(70, 0.8, 0.2, 0.1);
+/* limit(g(n, 0.8, 0.2, 0.1), n, inf); */
+
+/* Define Stirling approximation */
+stirling(n) := sqrt(2*%pi*n)*(n/%e)**n;
+float(stirling(70));
+
+/* Like gpcpr but uses Stirling approximation */
+stpr(n, pa, pb, x) := (stirling(n*pa) * stirling(n*(1-pa)) * stirling(n*pb) * stirling(n*(1-pb))) / (stirling(n*x) * stirling(n*(pa-x)) * stirling(n*(pb-x)) * stirling(n*(1-pa-pb+x)) * stirling(n));
+float(stpr(70, 0.8, 0.2, 0.1));
+
+/* Simplify Stirling approximation, remove any factors that may cancel out */
+/* simp_stirling(n) := sqrt(n)*(n/%e)**n; */
+simp_stirling(n) := sqrt(n)*n**n;
+
+/* Like st but uses simp_stirling */
+sstpr(n, pa, pb, x) := (simp_stirling(n*pa) * simp_stirling(n*(1-pa)) * simp_stirling(n*pb) * simp_stirling(n*(1-pb))) / (simp_stirling(n*x) * simp_stirling(n*(pa-x)) * simp_stirling(n*(pb-x)) * simp_stirling(n*(1-pa-pb+x)) * simp_stirling(n) * sqrt(2*%pi));
+float(sstpr(70, 0.8, 0.2, 0.1));
+
+/* Manually simplified s1 */
+mstpr(n, pa, pb, x) := (pa**((2*n*pa+1)/2) * pb**((2*n*pb+1)/2) * (pa-x)**((2*n*x-2*n*pa-1)/2) * (pb-x)**((2*n*x-2*n*pb-1)/2)) / (sqrt(2)*sqrt(%pi)*sqrt(n)*(1-pa)**((2*n*pa-2*n-1)/2) * (1-pb)**((2*n*pb-2*n-1)/2) * x**((2*n*x+1)/2) * (x-pb-pa+1)**((2*n*x-2*n*pb-2*n*pa+2*n+1)/2));
+/* Like above but distribute 1/2 inside powers */
+mstpr(n, pa, pb, x) := (pa**(n*pa+1/2) * pb**(n*pb+1/2) * (pa-x)**(n*x-n*pa-1/2) * (pb-x)**(n*x-n*pb-1/2)) / (sqrt(2)*sqrt(%pi)*sqrt(n)*(1-pa)**(n*pa-n-1/2) * (1-pb)**(n*pb-n-1/2) * x**(n*x+1/2) * (x-pb-pa+1)**(n*x-n*pb-n*pa+n+1/2));
+/* Like above but factorize by n inside powers */
+mstpr(n, pa, pb, x) := (pa**(n*pa+1/2) * pb**(n*pb+1/2) * (pa-x)**(n*(x-pa)-1/2) * (pb-x)**(n*(x-pb)-1/2)) / (sqrt(2)*sqrt(%pi)*sqrt(n)*(1-pa)**(n*(pa-1)-1/2) * (1-pb)**(n*(pb-1)-1/2) * x**(n*x+1/2) * (x-pb-pa+1)**(n*(x-pb-pa+1)+1/2));
+/* Like above but factorize by n inside powers all the way */
+mstpr(n, pa, pb, x) := (pa**(n*(pa+1/(2*n))) * pb**(n*(pb+1/(2*n))) * (pa-x)**(n*(x-pa-1/(2*n))) * (pb-x)**(n*(x-pb-1/(2*n)))) / (sqrt(2)*sqrt(%pi)*sqrt(n)*(1-pa)**(n*(pa-1-1/(2*n))) * (1-pb)**(n*(pb-1-1/(2*n))) * x**(n*(x+1/(2*n))) * (x-pb-pa+1)**(n*(x-pb-pa+1+1/(2*n))));
+/* Like above but move the factorized n inside powers one level up */
+mstpr(n, pa, pb, x) := 1/(sqrt(2)*sqrt(%pi)*sqrt(n)) * ((pa**(pa+1/(2*n)) * pb**(pb+1/(2*n)) * (pa-x)**(x-pa-1/(2*n)) * (pb-x)**(x-pb-1/(2*n))) / ((1-pa)**(pa-1-1/(2*n)) * (1-pb)**(pb-1-1/(2*n)) * x**(x+1/(2*n)) * (x-pb-pa+1)**(x-pb-pa+1+1/(2*n))))**n;
+/* Like above but uniformize signs inside the powers */
+mstpr(n, pa, pb, x) := 1/(sqrt(2)*sqrt(%pi)*sqrt(n)) * ((pa**(pa+1/(2*n)) * pb**(pb+1/(2*n)) * (1-pa)**(1-pa+1/(2*n)) * (1-pb)**(1-pb+1/(2*n))) / ((pa-x)**(pa-x+1/(2*n)) * (pb-x)**(pb-x+1/(2*n)) * x**(x+1/(2*n)) * (x-pb-pa+1)**(x-pb-pa+1+1/(2*n))))**n;
+/* Like above but move the square root factor inside the outer power of n */
+mstpr(n, pa, pb, x) := 1/(sqrt(2*%pi)) * ((pa**(pa+1/(2*n)) * pb**(pb+1/(2*n)) * (1-pa)**(1-pa+1/(2*n)) * (1-pb)**(1-pb+1/(2*n))) / (n**(1/(2*n)) * (pa-x)**(pa-x+1/(2*n)) * (pb-x)**(pb-x+1/(2*n)) * x**(x+1/(2*n)) * (x-pb-pa+1)**(x-pb-pa+1+1/(2*n))))**n;
+/* Like above but take all 1/(2*n) powers outside of the outer n power */
+/* Tip: manually copy/paste to the maxima buffer for best rendering */
+mstpr(n, pa, pb, x) := (sqrt(pa*pb*(1-pa)*(1-pb)) / (sqrt(2*%pi*n*(pa-x)*(pb-x)*x*(x-pb-pa+1)))) * ((pa**pa * pb**pb * (1-pa)**(1-pa) * (1-pb)**(1-pb)) / ((pa-x)**(pa-x) * (pb-x)**(pb-x) * x**x * (x-pb-pa+1)**(x-pb-pa+1)))**n;
+float(mstpr(70, 0.8, 0.2, 0.1));
+
+/* Like gpr and mstpr but pad with zero outside of valid x range */
+declare(epsilon, constant);
+epsilon: 1e-3;
+padded_gpr(n, pa, pb, x) := if x <= (lower(pa, pb) + epsilon) or (upper(pa, pb) - epsilon) <= x then 0.0 else float(gpr(n, pa, pb, x));
+padded_mstpr(n, pa, pb, x) := if x <= (lower(pa, pb) + epsilon) or (upper(pa, pb) - epsilon) <= x then 0.0 else float(mstpr(n, pa, pb, x));
+
+/* Derive limit of mstpr */
+limit(mstpr(n, pa, pb, x), n, inf);
+
+/* Derive limit of n^(1/(2*n)) (it tends to 1) */
+limit(n**(1/(2*n)), n, inf);
+
+/* Attempt to derive the limit of Pr(P_AB <= 0.2) */
+/* limit(sum(g(n, 0.8, 0.2, i/n), i, 0, n*0.2), n, inf); */
+
+/* Calculate the mean of a Riemann sum given a unary function of index and its range */
+riemann_sum_mean(f, l, u) := sum(i*f(i), i, l, u) / (u - l);
+
+/* Calculate the variance of a Riemann sum */
+riemann_sum_variance(f, l, u) := block([r, m], r: u - l, m: riemann_sum_mean(f, l, u), sum(f(i)*(i/r - m)**2, i, l, u) / r);
+
+/* Test Riemann sum mean and variance */
+rmstpr_50(i) := float(padded_mstpr(50, 0.5, 0.5, i/50));
+rmstpr_100(i) := float(padded_mstpr(100, 0.5, 0.5, i/100));
+rmstpr_200(i) := float(padded_mstpr(200, 0.5, 0.5, i/200));
+rmstpr_400(i) := bfloat(padded_mstpr(bfloat(400), bfloat(0.5), bfloat(0.5), bfloat(i/400)));
+rmstpr_800(i) := bfloat(padded_mstpr(bfloat(800), bfloat(0.5), bfloat(0.5), bfloat(i/800)));
+riemann_sum_mean(rmstpr_50, 0, 50);
+riemann_sum_variance(rmstpr_50, 0, 50);
+riemann_sum_mean(rmstpr_100, 0, 100);
+riemann_sum_variance(rmstpr_100, 0, 100);
+riemann_sum_mean(rmstpr_200, 0, 200);
+riemann_sum_variance(rmstpr_200, 0, 200);
+riemann_sum_mean(rmstpr_400, 0, 400);
+riemann_sum_variance(rmstpr_400, 0, 400);
+riemann_sum_mean(rmstpr_800, 0, 800);
+riemann_sum_variance(rmstpr_800, 0, 800);
+
+/* Calculate alpha and beta parameters of a fitting unscaled beta
+distribution given the empirical mean and variance of another
+distribution.  Return -1 if precondition is not met. */
+fit_alpha(m, v) := float(if v < m*(1-m) then ((m*(1-m)/v)-1)*m else -1);
+fit_beta(m, v) := float(if v < m*(1-m) then ((m*(1-m)/v)-1)*(1-m) else -1);
+
+/* Fit alpha for mean=0.2528 and variance=1.3202e-5 obtained with padded_mstpr(70, 0.5, 0.5, i/70)
+fit_alpha(0.16055, 4.834e-6); /* outputs 4476 */
+fit_beta(0.16055, 4.834e-6); /* outputs 23403 */
+
+/* Calculate mean and variance of a beta distribution given its alpha
+and beta parameters. */
+beta_distr_mean(alpha, beta) := float(alpha / (alpha+beta));
+beta_distr_variance(alpha, beta) := float(alpha*beta / ((alpha+beta)**2 * (alpha+beta+1)));
+beta_distr_mean(4476, 23403); /* outputs 0.16055 */
+beta_distr_variance(4476, 23403); /* outputs 4.834e-6 */
+
+/* Calculate alpha and beta parameters of a fitting caled beta
+distribution given the empirical mean and variance of another
+distribution.  Return -1 if precondition is not met.  */
+fit_scaled_alpha(m, v, pa, pb) := NEXT
+fit_sclaed_beta(m, v, pa, pb) := NEXT
+fit_alpha(0.16055, 4.834e-6, 0.8, 0.2); /* outputs NEXT */
+fit_beta(0.16055, 4.834e-6, 0.8, 0.2); /* outputs NEXT */
+
+/* Calculate mean and variance of a beta distribution given its alpha
+and beta parameters. */
+scaled_beta_distr_mean(alpha, beta, pa, pb) := NEXT
+scaled_beta_distr_variance(alpha, beta, pa, pb) := NEXT
+scaled_beta_distr_mean(NEXT, NEXT);
+scaled_beta_distr_variance(NEXT, NEXT);
+
+/* Draw Pr(P_AB <= x) using gamma form */
+draw2d(xrange = [0, 1], explicit(g(70, 0.8, 0.2, x), x, 0, 0.2));
+
+/* Draw Pr(P_AB <= x) using Stirling form */
+draw2d(xrange = [0, 1], explicit(padded_mstpr(70, 0.5, 0.5, x), x, 0, 1));
+
+/* Draw scaled beta distribution */
+draw2d(xrange = [0, 1], explicit(pdf_scaled_beta(x, 10, 5, 0.8, 0.8), x, 0, 1));
+
+/* Draw Pr(P_AB <= x) Stirling forms and unscaled beta fit */
+draw2d(xrange = [0, 1], color=red, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=green, explicit(pdf_beta(x, 44*1.3, 234*1.3)/70, x, 0, 1));
+
+/* Draw Pr(P_AB <= x) using Stirling forms and beta fit (scaling) */
+draw2d(xrange = [0, 1], color=green, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 0, 1), color=blue, explicit(pdf_scaled_beta(x, 10, 5, 0.8, 0.2), x, 0, 1));
+
+/* Draw Pr(P_AB <= x) using Stirling forms with different n */
+draw2d(title="Pr(p_{AB} <= x) with p_A=p_B=0.5 using Stirling approximation", xlabel="x", ylabel="density", xrange=[0, 1], color=green, key="n=50", explicit(padded_mstpr(50, 0.5, 0.5, x)*50, x, 0, 1), color=blue, key="n=100", explicit(padded_mstpr(100, 0.5, 0.5, x)*100, x, 0, 1), color=red, key="n=200", explicit(padded_mstpr(200, 0.5, 0.5, x)*200, x, 0, 1), color=purple, key="n=400", explicit(padded_mstpr(bfloat(400), bfloat(0.5), bfloat(0.5), x)*bfloat(400), x, bfloat(0), bfloat(1)));
+
+/* Draw Pr(P_AB <= x) using Stirling forms with different n, using gpr instead of mstpr */
+draw2d(title="Pr(p_{AB} <= x) with p_A=p_B=0.5 using 𝛤 functions", xlabel="x", ylabel="density", xrange=[0, 1], color=green, key="n=50", explicit(padded_gpr(50, 0.5, 0.5, x)*50, x, 0, 1), color=blue, key="n=100", explicit(padded_gpr(100, 0.5, 0.5, x)*100, x, 0, 1), color=red, key="n=200", explicit(padded_gpr(bfloat(200), bfloat(0.5), bfloat(0.5), x)*bfloat(200), x, 0, 1), color=purple, key="n=400", explicit(padded_gpr(bfloat(400), bfloat(0.5), bfloat(0.5), x)*bfloat(400), x, bfloat(0), bfloat(1)));
+
+/* Draw x^x */
+draw2d(xrange = [-1, 1], explicit(x**x, x, -1, 1));
+
+/* Draw beta distribution */
+draw2d(xrange = [0, 1], explicit(pdf_beta(x, 44, 234), x, 0, 1));
+
+/* Simplfy simp_stpcpr (sort of) */
+radcan(sstpr(n, pa, pb, x));
+radcan(mstpr(n, pa, pb, x));
+expand(sqrt(2*%pi*n*(pa-x)*(pb-x)*x*(x-pb-pa+1)));
+expand((pa-x)*(pb-x)*x*(x-pb-pa+1));
+expand((sqrt(pa*pb*(1-pa)*(1-pb)) / (sqrt(2*%pi*n*(pa-x)*(pb-x)*x*(x-pb-pa+1)))))
+
+/* Study sums */
+float(sum(gpr(70, 0.8, 0.2, i/70), i, 0, 70*0.2));
+float(sum(sstpr(70, 0.8, 0.2, i/70), i, 1, 69*0.2));
+float(sum(padded_mstpr(70, 0.8, 0.2, i/70), i, 0, 70));
+float(sum(pdf_beta(i/70, 5, 10)/70, i, 0, 70));
+float(sum(pdf_scaled_beta(i/70, 5, 10, 0.8, 0.8)/70, i, 0, 70));
+
+/* NEXT: use discrete distribution instead of re-inventing the wheel
+https://maxima.sourceforge.io/docs/manual/Package-distrib.html#Functions-and-Variables-for-discrete-distributions
+*/
+
+/* NEXT: use Stirling package instead of re-inventing the wheel
+https://maxima.sourceforge.io/docs/manual/Package-stirling.html#Package-stirling
+*/
+
+/* NEXT: try to fit a generalized beta distribution */
+
+/* NEXT: plot various components of mstpr while varying pa, pb and x.
+         The goal is to understand how their powers of n should
+         evolve, such as is it greater than 1. */
+
+/* NEXT: Look into the simplification package
+https://maxima.sourceforge.io/docs/manual/Package-simplification.html#Package-simplification
+*/
+
+/* NEXT: Study how to simplify the sum of mstpr, or gpcpr who knows */
+
+/* NEXT: Possibly study the stats package
+https://maxima.sourceforge.io/docs/manual/Package-stats.html#Package-stats
+*/
+
+/* NEXT: Possibly study the Zeilberger package
+https://maxima.sourceforge.io/docs/manual/Package-zeilberger.html#Package-zeilberger
+*/
+
+/* NEXT: Possibly study the Integration package
+https://maxima.sourceforge.io/docs/manual/Integration.html#Integration
+*/
+
+/* NEXT: Possibly study Sums, Products and Series
+https://maxima.sourceforge.io/docs/manual/Sums-Products-and-Series.html#Sums-Products-and-Series
+*/
+
+/* NEXT: reformulate mstpr using δt instead of n */
+
+/* NEXT: maybe attempt to come up with Riemann integral with pa=pb=1/2 */
