@@ -627,7 +627,7 @@ pdf(p=a) == f(p=a)
 A question that has been in the back my mind for a long time is:
 
 What is the probability distribution obtained from applying a rule
-formula to premises which are themselves first probabilities?
+formula to premises which are themselves first order probabilities?
 
 Let us for instance consider the conjunction introduction rule
 
@@ -638,27 +638,27 @@ B ≞ TVB
 (A ∧ B) ≞ TVAB
 ```
 
-In order to obtain `TVAB` one must ideally
+In order to obtain an accurate estimate of `TVAB` one would ideally
 1. sample `TVA` and `TVB` to obtain first order probabilities, say
    `pA` and `pB` for a sample size of 1,
-2. multiple `pA` and `pB` to obtain `pAB`, i.e. `pAB = pA*pB`,
-3. repeat to 1 till we get enough `pAB` samples and fit whatever
-   underlying distribution we wish to represent `TVAB` (likw a beta
-   distribution, even though we know it is not perfect fit).
+2. multiply `pA` and `pB` to obtain `pAB`, i.e. `pAB = pA*pB`,
+3. repeat to 1 to get enough a large sample of `pAB` and fit whatever
+   underlying distribution we choose to represent `TVAB` (like a beta
+   distribution, as unfit as it may generally be).
 
 The question in step 2 is: should we casually multiple `pA` with `pB`
 to obtain `pAB`?  Meaning should we assume that `pA` and `pB` are
 independent?  Or do we need to worry about the fact that we don't know
-if `pA` and `pB` are indepdent and therefore we should instead
+if `pA` and `pB` are independent and therefore we should instead
 integrate over all possible ways that `A` and `B` could be
 distributed?  Indeed, `A` and `B` could have true probabilities `pA`
-and `pB` respectively, yet perfectly overlap `pAB = min(pA, pB)`, or
-not overlap at all, `pAB = 0`, etc.  If we integrate over all possible
-ways that `A` and `B` could be distributed, maybe we get a variance
-that we need to account for so that instead of obtaining `pAB = pA*pB`
-we obtain a distribution over `pAB`?  If this is the case then the
-concluding TV `TVAB` would take into account the variances of these
-"distrolets" obtained during step 2.
+and `pB` respectively, yet perfectly overlap i.e. `pAB = min(pA, pB)`,
+or not overlap at all, that is `pAB = 0`, etc.  If we integrate over
+all possible ways that `A` and `B` could be distributed, maybe we get
+a variance that we need to account for so that instead of obtaining
+`pAB = pA*pB` we obtain a distribution over `pAB`?  If this is the
+case then the concluding TV `TVAB` would take into account the
+variances of these "distrolets" obtained during step 2.
 
 I am happy to report that this question is now settled and the answer
 is no, we do not need to worry about integrating over all possible
@@ -689,13 +689,13 @@ where `|A|=a`, `|B|=b` and `|U|=n` (`U` is the universe).
 
 Let us replace `k` by `n*x`, `a` by `n*pa` and `b` by `n*pb`, where
 `pa` (resp. `pb`) is the marginal probability of `A` (resp. `B`).
-Using the Stirling approximation we can derive that
+Using the Stirling approximation of factorial we can derive that
 
 ```
 Pr(pAB = x) = (sqrt(pa*pb*(1-pa)*(1-pb)) / (sqrt(2*%pi*n*(pa-x)*(pb-x)*x*(x-pb-pa+1))))
-              * ((pa**pa * pb**pb * (1-pa)**(1-pa) * (1-pb)**(1-pb))
-                 /
-                 ((pa-x)**(pa-x) * (pb-x)**(pb-x) * x**x * (x-pb-pa+1)**(x-pb-pa+1)))**n
+            * ((pa**pa * pb**pb * (1-pa)**(1-pa) * (1-pb)**(1-pb))
+               /
+               ((pa-x)**(pa-x) * (pb-x)**(pb-x) * x**x * (x-pb-pa+1)**(x-pb-pa+1)))**n
 ```
 
 Or as rendered by Maxima
@@ -712,9 +712,8 @@ varying `n` from 50 to 400.
 Already we can see a clear trend where the distrolet is shrinking as
 `n` goes up.
 
-Then, using Stirling approximation, we can push `n` much larger and
-see that the distrolet tends, at least visually, to a Dirac delta
-distribution.
+Using Stirling approximation we can push `n` much larger and see that
+the distrolet tends to a Dirac delta distribution.
 
 ![](plots/conjunction-Stirling-n_400.png)
 ![](plots/conjunction-Stirling-n_4000.png)
@@ -722,6 +721,6 @@ distribution.
 ![](plots/conjunction-Stirling-n_400000.png)
 ![](plots/conjunction-Stirling-n_4000000.png)
 
-I wanted to provide an analytical proof of it, but I think it is
-already convincing enough that it converges to a Dirac delta
-distribution of mean `pAB=pA*pB`.
+I know a rigorous proof would be better, but I think it is already
+convincing enough that it converges to a Dirac delta distribution of
+mean `pAB=pA*pB`.
