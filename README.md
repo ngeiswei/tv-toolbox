@@ -622,14 +622,26 @@ f(p=a) = (n x)p^x*(1-p)^(n-x)
 
 pdf(p=a) == f(p=a)
 
-## On the Confidence of the Concluding TV Obtained from Premises with Perfect Confidences
+## Towards Correct Calculations of Confidences
 
-A question that has been in the back my mind for a long time is:
+In this section we attempt to improve the confidence calculations in
+PLN inference rule formulas.  The goal is to get calculations which
+are efficient yet justified by probability theory.  It is our belief
+that the ideal calculations can only be obtained via uncomputable
+integration over multiple worlds (and to that end we intend to
+eventually introduce a Universal Truth Value, or UTV for short).  In
+this work we suggest localized and efficient forms of such
+integration, that we hope to later formally justify as approximations
+of such universal integration.
+
+We start with the conjunction introduction rule for its simplicity.
+
+### First Attempt Uniformly Sampling Underlying Sets
+
+A question that has been in the back my mind for a while is:
 
 What is the probability distribution obtained from applying a rule
 formula to premises which are themselves first order probabilities?
-
-### First Attempt Uniformly Sampling Underlying Sets
 
 Let us for instance consider the conjunction introduction rule
 
