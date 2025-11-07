@@ -26,6 +26,9 @@ dst(pa, pb) := upper(pa, pb) - lower(pa, pb);
 lower(bfloat(0.8), bfloat(0.8));
 upper(0.8, 0.8);
 
+/* Uniform distribution between lower to upper */
+pdf_unilu(x, pa, pb) := if (x < lower(pa, pb) or upper(pa, pb) < x) then 0 else 1 / dst(pa, pb);
+
 /* Scale x in [0,1] to [lower(pa, pb), upper(pa, pb)], and vice versa. */
 scale(x, pa, pb) := x*dst(pa, pb) + lower(pa, pb);
 scale(0.5, 0.8, 0.8); /* should return 0.7 */
@@ -183,7 +186,8 @@ draw2d(xrange = [0, 1], color=green, explicit(padded_mstpr(70, 0.8, 0.2, x), x, 
 /* Draw Pr(P_AB <= x) using Stirling forms with different n */
 draw2d(title="Pr(p_{AB} <= x) with p_A=p_B=0.5 using Stirling approximation", xlabel="x", ylabel="density", xrange=[0, 1], color=green, key="n=50", explicit(padded_mstpr(50, 0.5, 0.5, x)*50, x, 0, 1), color=blue, key="n=100", explicit(padded_mstpr(100, 0.5, 0.5, x)*100, x, 0, 1), color=red, key="n=200", explicit(padded_mstpr(200, 0.5, 0.5, x)*200, x, 0, 1), color=purple, key="n=400", explicit(padded_mstpr(bfloat(400), bfloat(0.5), bfloat(0.5), x)*bfloat(400), x, bfloat(0), bfloat(1)));
 
-/* Draw Pr(P_AB <= x) using Stirling forms with different n, using gpr instead of mstpr */
+/* Draw Pr(P_AB <= x) using Stirling forms with different n, using gpr
+instead of mstpr */
 draw2d(title="Pr(p_{AB} <= x) with p_A=p_B=0.5 using 𝛤 functions", xlabel="x", ylabel="density", xrange=[0, 1], color=green, key="n=50", explicit(padded_gpr(50, 0.5, 0.5, x)*50, x, 0, 1), color=blue, key="n=100", explicit(padded_gpr(100, 0.5, 0.5, x)*100, x, 0, 1), color=red, key="n=200", explicit(padded_gpr(bfloat(200), bfloat(0.5), bfloat(0.5), x)*bfloat(200), x, 0, 1), color=purple, key="n=400", explicit(padded_gpr(bfloat(400), bfloat(0.5), bfloat(0.5), x)*bfloat(400), x, bfloat(0), bfloat(1)));
 
 /* Draw x^x */
@@ -191,6 +195,10 @@ draw2d(xrange = [-1, 1], explicit(x**x, x, -1, 1));
 
 /* Draw beta distribution */
 draw2d(xrange = [0, 1], explicit(pdf_beta(x, 44, 234), x, 0, 1));
+
+/* Draw uniform distribution between lower and upper for different
+values of pa and pb */
+draw2d(title="Uniform distrolets within valid bounds for different values of pA and pB", xlabel="x", ylabel="density", xrange=[0,1], yrange=[0,21], key_pos=top_left, color=pink, key="pA=pB=0.1", explicit(pdf_unilu(x, 0.1, 0.1), x, 0, 1), color=blue, key="pA=pB=0.25", explicit(pdf_unilu(x, 0.25, 0.25), x, 0, 1), color=red, key="pA=pB=0.5", explicit(pdf_unilu(x, 0.5, 0.5), x, 0, 1), color=green, key="pA=pB=0.675", explicit(pdf_unilu(x, 0.675, 0.675), x, 0, 1), color=violet, key="pA=pB=0.8", explicit(pdf_unilu(x, 0.8, 0.8), x, 0, 1), color=orange, key="pA=pB=0.95", explicit(pdf_unilu(x, 0.95, 0.95), x, 0, 1), color=brown, key="pA=0.15,pB=0.6", explicit(pdf_unilu(x, 0.15, 0.6), x, 0, 1), color=grey, key="pA=0.4,pB=0.9", explicit(pdf_unilu(x, 0.4, 0.9), x, 0, 1));
 
 /* Simplfy simp_stpcpr (sort of) */
 radcan(sstpr(n, pa, pb, x));
