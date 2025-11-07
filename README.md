@@ -629,6 +629,8 @@ A question that has been in the back my mind for a long time is:
 What is the probability distribution obtained from applying a rule
 formula to premises which are themselves first order probabilities?
 
+### First Attempt Uniformly Sampling Underlying Sets
+
 Let us for instance consider the conjunction introduction rule
 
 ```
@@ -660,18 +662,18 @@ a variance that we need to account for so that instead of obtaining
 case then the concluding TV `TVAB` would take into account the
 variances of these "distrolets" obtained during step 2.
 
-I am happy to report that this question is now settled and the answer
-is no, we do not need to worry about integrating over all possible
-ways that `A` and `B` could be distributed.  We merely can assume that
-they are independent because the distrolet obtained from such
-integration when the size of the universe tends to infinity tends to a
-Dirac delta distribution with mean `pA*pB`.  In order words,
-considering all possible ways that `A` and `B` could be distributed
-without any additional knowledge about them other than the fact that
-they are uniformly randomly distributed is equivalent to assuming that
-they are independent!  I know it sounds obvious when phrased in that
-way, but keep in mind that this is only true when the size of the
-universe is infinit.
+Given these specific premises the answer to this question is no, we do
+not need to worry about integrating over all possible ways that `A`
+and `B` could be distributed.  We merely can assume that they are
+independent because the distrolet obtained from such integration when
+the size of the universe tends to infinity tends to a Dirac delta
+distribution with mean `pA*pB`.  In order words, considering all
+possible ways that `A` and `B` could be distributed without any
+additional knowledge about them other than the fact that they are
+uniformly randomly distributed is equivalent to assuming that they are
+independent!  I know it sounds obvious when phrased in that way, but
+keep in mind that this is only true when the size of the universe is
+infinit.
 
 To reach this conclusion we have conducted the following experiment
 using Maxima.  The code of the experiment can be found in
@@ -724,3 +726,73 @@ the distrolet tends to a Dirac delta distribution.
 I know a rigorous proof would be better, but I think it is already
 convincing enough that it converges to a Dirac delta distribution of
 mean `pAB=pA*pB`.
+
+### Second Attempt Introducing Extra Random Dependencies
+
+Obviously the reason we obtain Dirac delta distributions is because A
+and B are uniformly independently sampled, which is equivalent to
+assuming that they are independent.  Indeed, as their sizes tend to
+infinity all random fluctuations that may have introduce dependencies
+vanish.
+
+In this second attempt we introduce an extra premise that explicitly
+states dependencies.  The conjunction introduction rule is thus
+reformulated as
+
+```
+A ≞ TVa
+B ≞ TVb
+A -> B ≞ TVab
+⊢
+A ∧ B ≞ TVAB
+```
+
+This formulation generalizes the one in the section above, which can
+be recovered by setting `TVab = <1, 0>`, representing the absence of
+knowledge about `A -> B`.
+
+If `TVab = <1, 0>`, the sampling process to estimate the second order
+distribution associated to `TVAB` will still account for `A -> B` but
+consider a beta distribution prior, such as the Bayes' prior, to
+sample from.
+
+Like for the deduction rule, probability theory imposes some
+constraints over what probabilities are possible.  Specifically, given
+first order probabilities `pa` sampled from `TVa` and `pb` sampled
+from `TVb`, probability `pab` sampled from `TVab` must be within the
+following bounds
+
+```
+max(1+(pb-1)/pa, 0) <= pab <= min(1, pb/pa)
+```
+
+assuming that `0 < pa`, otherwise `pAB = 0` anyway.
+
+This inequality is justified by considering the extremes within which
+`Pr(A,B)` must be bound, corresponding to two situtations
+
+1. `A` and `B` intersect the least, corresponding to `max(pa+pb-1, 0)`,
+2. `A` and `B` intersect the most, corresponding to `min(pa, pb)`.
+
+That is
+
+```
+max(pa+pb-1, 0) <= pAB <= min(pa, pb)
+```
+
+since
+
+```
+pab = Pr(A|B) = Pr(A,B)/Pr(B) = pAB/pa
+```
+
+the inequality of `pab` is obtained by dividing everything by `pa`.
+
+Interestingly, given the localized nature introduced by these bounds,
+we can resurrect the idea of replacing concluding first order
+probabilities by distrolets.  Below is a plot showing such distrolets
+for various values of `pa` and `pb`.
+
+![](plots/conjunction-uniform-distrolets.png)
+
+NEXT: talk about the generalized case where `A -> B` is known to some degree.
