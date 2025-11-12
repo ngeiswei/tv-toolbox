@@ -1,6 +1,7 @@
 /* Load packages */
-load(draw)$
-load(distrib)$
+load(draw)$ /* draw2d */
+load(distrib)$ /* pdf_beta, etc */
+load(descriptive)$ /* histogram */
 
 /* Big float precision */
 fpprec:51;
@@ -213,6 +214,36 @@ float(sum(sstpr(70, 0.8, 0.2, i/70), i, 1, 69*0.2));
 float(sum(padded_mstpr(70, 0.8, 0.2, i/70), i, 0, 70));
 float(sum(pdf_beta(i/70, 5, 10)/70, i, 0, 70));
 float(sum(pdf_scaled_beta(i/70, 5, 10, 0.8, 0.8)/70, i, 0, 70));
+
+/* Study conjunction introduction */
+
+/* NEXT: complement histograms with information about mean and
+variance (hint: use block) */
+
+/* NEXT: try to make even more conservative, maybe try convex
+distrolet instead of flat */
+
+/* Histogram of a beta distribution */
+histogram(random_beta(50, 30, 100000), nclasses = [0, 1, 50], frequency = density), keepfloat;
+
+/* Histogram of the product of two beta distributions (corresponding
+to conjunction introduction formula under the independence assumption)
+*/
+histogram(create_list(pa*pb, pa, random_beta(50, 30, 1000), pb, random_beta(100, 10, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
+
+/* Histogram of the product of two Bayes' priors (still with
+independence assumption) */
+histogram(create_list(pa*pb, pa, random_beta(1, 1, 1000), pb, random_beta(1, 1, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
+
+/* Histogram of the product of two beta distributions (most
+conservative assumption) */
+random_uniform_distrolet(pa, pb) := if lower(pa, pb) < upper(pa, pb) then random_continuous_uniform(lower(pa, pb), upper(pa, pb)) else upper(pa, pb);
+histogram(create_list(random_uniform_distrolet(pa, pb), pa, random_beta(50, 30, 1000), pb, random_beta(100, 10, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
+
+/* Histogram of the product of two Bayes' priors (most conservative assumption) */
+histogram(create_list(random_uniform_distrolet(pa, pb), pa, random_beta(1, 1, 1000), pb, random_beta(1, 1, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
+
+histogram(random_continuous_uniform(0.2, 0.6, 1000000), nclasses = [0, 1, 50], frequency = density), keepfloat;
 
 /* NEXT: use discrete distribution instead of re-inventing the wheel
 https://maxima.sourceforge.io/docs/manual/Package-distrib.html#Functions-and-Variables-for-discrete-distributions
