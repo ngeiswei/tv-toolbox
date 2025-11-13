@@ -218,26 +218,26 @@ float(sum(pdf_scaled_beta(i/70, 5, 10, 0.8, 0.8)/70, i, 0, 70));
 
 /* Study conjunction introduction */
 
+/* Histogram of a beta distribution */
+block([n, a, b, smp, m, v], n: 1000, a: 50, b: 30, smp: random_beta(a, b, n), m: mean(smp), v: var(smp), histogram(smp, nclasses = [0, 1, 50], title = printf(false, "Sampled (size=~a) beta dist with α=~a, β=~a, μ=~,4f, σ²=~,4f", n, a, b, m, v), xlabel = "Probability", ylabel = "Density", frequency = density), keepfloat);
+
+/* Define function to plot on the same chart, the pdf of the premises
+and conclusion of an independence-based conjunction introduction
+formula. */
+plot_independence_conjunction_introduction(n, s, a1, b1, a2, b2, ymax) := block([smp1, m1, v1, smp2, m2, v2, smp, m, v], smp1: random_beta(a1, b1, n), m1: mean(smp1), v1: var(smp1), smp2: random_beta(a2, b2, n), m2: mean(smp2), v2: var(smp2), smp: create_list(pa*pb, pa, smp1, pb, smp2), m: mean(smp), v: var(smp), draw2d(title = printf(false, "Independence Conjuction Introduction (smp size: ~a*~a, hist size: ~a)", n, n, s), xlabel = "Probability", ylabel = "Density", histogram_description(smp, nclasses = [0, 1, s], key = printf(false, "μ=~,4f, σ²=~,8f", m, v), frequency = density), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a1, b1, m1, v1), color = blue, explicit(pdf_beta(x, a1, b1), x, 0, 1), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a2, b2, m2, v2), color = green, explicit(pdf_beta(x, a2, b2), x, 0, 1), yrange = [0, ymax]), keepfloat);
+
+/* Histograms of independence-based conjunction introduction */
+plot_independence_conjunction_introduction(1000, 100, 500, 300, 100, 10, 30);
+plot_independence_conjunction_introduction(1000, 100, 50, 30, 100, 10, 20);
+plot_independence_conjunction_introduction(1000, 100, 3, 1, 4, 1, 6);
+plot_independence_conjunction_introduction(1000, 100, 2, 1, 1, 2, 6);
+plot_independence_conjunction_introduction(1000, 100, 1, 1, 1, 1, 6);
+
 /* NEXT: try to make even more conservative, maybe try convex
 distrolet instead of flat */
 
 /* NEXT: compare Dirac vs uniform distrolet for very high confidence
 of premises, and average strengths. */
-
-/* Histogram of a beta distribution */
-/* smp: random_beta(50, 30, 100000);
-m: mean(smp);
-v: var(smp); */
-block([n, a, b, smp, m, v], n: 1000, a: 50, b: 30, smp: random_beta(a, b, n), m: mean(smp), v: var(smp), histogram(smp, nclasses = [0, 1, 50], title = printf(false, "Sampled (size=~a) beta dist with α=~a, β=~a, μ=~,4f, σ²=~,4f", n, a, b, m, v), xlabel = "Probability", ylabel = "Density", frequency = density), keepfloat);
-
-/* Histogram of the product of two beta distributions (corresponding
-to conjunction introduction formula under the independence assumption)
-*/
-block([n, a1, b1, a2, b2, smp1, m1, v1, smp2, m2, v2, smp, m, v], n: 1000, a1: 50, b1:30, a2: 100, b2: 10, smp1: random_beta(a1, b1, n), m1: mean(smp1), v1: var(smp1), smp2: random_beta(a2, b2, n), m2: mean(smp2), v2: var(smp2), smp: create_list(pa*pb, pa, smp1, pb, smp2), m: mean(smp), v: var(smp), draw2d(xrange = [0, 1], title = printf(false, "Independence Conjuction Introduction (sample size: ~a*~a)", n, n), xlabel = "Probability", ylabel = "Density", histogram_description(smp, nclasses = [0, 1, 50], key = printf(false, "μ=~,4f, σ²=~,4f", m, v), frequency = density), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,4f", a1, b1, m1, v1), color = blue, explicit(pdf_beta(x, a1, b1), x, 0, 1), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,4f", a2, b2, m2, v2), color = green, explicit(pdf_beta(x, a2, b2), x, 0, 1), yrange = [0, 20]), keepfloat);
-
-/* Histogram of the product of two Bayes' priors (still with
-independence assumption) */
-histogram(create_list(pa*pb, pa, random_beta(1, 1, 1000), pb, random_beta(1, 1, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
 
 /* Histogram of the product of two beta distributions (most
 conservative assumption) */
