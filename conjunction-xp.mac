@@ -221,9 +221,20 @@ float(sum(pdf_scaled_beta(i/70, 5, 10, 0.8, 0.8)/70, i, 0, 70));
 /* Histogram of a beta distribution */
 block([n, a, b, smp, m, v], n: 1000, a: 50, b: 30, smp: random_beta(a, b, n), m: mean(smp), v: var(smp), histogram(smp, nclasses = [0, 1, 50], title = printf(false, "Sampled (size=~a) beta dist with α=~a, β=~a, μ=~,4f, σ²=~,4f", n, a, b, m, v), xlabel = "Probability", ylabel = "Density", frequency = density), keepfloat);
 
-/* Define function to plot on the same chart, the pdf of the premises
-and conclusion of an independence-based conjunction introduction
-formula. */
+/*
+Plot on a chart
+- pdf of beta distribution of premises
+- histogram of conclusion of independence-based conjunction introduction.
+
+Arguments are
+- n: sample size of each beta distribution
+- s: number of histogram bins
+- a1: alpha parameter of first premise
+- b1: beta parameter of first premise
+- a2: alpha parameter of second premise
+- b2: beta parameter of second premise
+- ymax: maximum range of the y axis
+*/
 plot_independence_conjunction_introduction(n, s, a1, b1, a2, b2, ymax) := block([smp1, m1, v1, smp2, m2, v2, smp, m, v], smp1: random_beta(a1, b1, n), m1: mean(smp1), v1: var(smp1), smp2: random_beta(a2, b2, n), m2: mean(smp2), v2: var(smp2), smp: create_list(pa*pb, pa, smp1, pb, smp2), m: mean(smp), v: var(smp), draw2d(title = printf(false, "Independence Conjuction Introduction (smp size: ~a*~a, hist size: ~a)", n, n, s), xlabel = "Probability", ylabel = "Density", histogram_description(smp, nclasses = [0, 1, s], key = printf(false, "μ=~,4f, σ²=~,8f", m, v), frequency = density), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a1, b1, m1, v1), color = blue, explicit(pdf_beta(x, a1, b1), x, 0, 1), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a2, b2, m2, v2), color = green, explicit(pdf_beta(x, a2, b2), x, 0, 1), yrange = [0, ymax]), keepfloat);
 
 /* Histograms of independence-based conjunction introduction */
