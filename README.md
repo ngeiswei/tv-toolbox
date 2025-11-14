@@ -832,6 +832,7 @@ variance.
 
 In all plots, the blue and green curves indicate the PDFs of the
 premises, while the red histogram indicates the PDF of the conclusion.
+
 We start with premises with high confidences (α=6000 and β=3000 for
 the first premise, α=1000 and β=100 for the second premise).
 
@@ -839,19 +840,51 @@ the first premise, α=1000 and β=100 for the second premise).
 ![](plots/unidistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
 
-One can observe NEXT
+One can observe that for such high confidences the desired effect is
+obtained, meaning that the variance of the conclusion using uniform
+distrolets, 0.00073803, is substantially greater than that of both its
+premises, 0.00002453 and 0.00007300.  It is also substantially greater
+than the one obtained by making the independence assumption,
+0.00005292.  The variance obtained from the extreme distrolets is even
+greater, 0.00212295, but result in a bimodal distribution which is
+probably not desirable.
 
-![](plots/independence-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
-![](plots/unidistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
-![](plots/extdistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+We continue with similar premises but with reduced confidences (α=500
+and β=300 for the first premise, α=100 and β=10 for the second
+premise).
 
 ![](plots/independence-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
 
+The same phenomenon, albeit less acute, can be observed, with
+variances 0.00122727 for the uniform distrolets and 0.00266664 for the
+extreme distrolets, greater than the variances of their premises.
+
+In the following plots the confidence of the first premise is
+substantially reduced (α=50 and β=30 for the first premise).
+
+![](plots/independence-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/unidistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/extdistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+
+The same phenomenon is still observed albeit less acutely.
+
+The next plots consider premises with only positive evidence and very
+low confidences.
+
 ![](plots/independence-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+
+Interestingly here even the concluding variance obtained from the
+independence assumption, 0.004037894, is greater than the variances of
+its premises, 0.033756043 and 0.02785076.  In fact, the concluding
+variances in all three cases are not far apart, with 0.04628453 for
+the uniform distrolets and 0.04888252 for the extreme distrolets.  For
+the latter, the extreme distrolets, one may notice a spike at 0.  This
+is because when the first order sampled probabilities sum up to less
+than one, zero is selected as concluding probability half of the time.
 
 ![](plots/independence-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
