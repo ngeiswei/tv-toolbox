@@ -631,10 +631,12 @@ that the ideal calculations can only be obtained via uncomputable
 integration over multiple worlds (and to that end we intend to
 eventually introduce a Universal Truth Value, or UTV for short).  In
 this work we suggest localized and efficient forms of such
-integration, that we hope to later formally justify as approximations
-of such universal integration.
+integration, that we hope can later be formally justified as
+approximations of such universal integration.
 
 We start with the conjunction introduction rule for its simplicity.
+All the code involved in these experiments can be found in
+[conjunction-xp.mac](conjunction-xp.mac).
 
 ### First Attempt Uniformly Sampling Underlying Sets
 
@@ -688,8 +690,7 @@ keep in mind that this is only true when the size of the universe is
 infinit.
 
 To reach this conclusion we have conducted the following experiment
-using Maxima.  The code of the experiment can be found in
-[conjunction-xp.mac](conjunction-xp.mac).
+using Maxima.
 
 We begin by defining how many ways `A` and `B` could intersect with
 intersection `|A ∩ B| = k`.  For that we use combinations to obtain
@@ -807,4 +808,41 @@ for various values of `pa` and `pb`.
 
 ![](plots/conjunction-uniform-distrolets.png)
 
-NEXT: talk about the generalized case where `A -> B` is known to some degree.
+### Compare Conjunction Introduction with and without Dependencies
+
+Let us now put all this together and build second order distributions
+obtained from the sampling method described earlier, which, to sum up,
+consists of sampling first order probabilities from premises, then
+either apply the product or sample from distrolets to obtain first
+order probability samples to build the concluding second order
+distribution.
+
+What we would like to see is how much variance in the concluding
+distribution the distrolets bring vs using the independence
+assumption.
+
+Let us start by showing plots obtained from the product, i.e. making
+the independence assumption.  In all plots, the blue and green curves
+indicate the PDFs of the premises, while the red histogram indicates
+the PDF of the conclusion.
+
+![](plots/independence-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
+![](plots/independence-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/independence-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+![](plots/independence-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+![](plots/independence-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+![](plots/independence-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
+
+![](plots/unidistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
+![](plots/unidistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/unidistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+![](plots/unidistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+![](plots/unidistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+![](plots/unidistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
+
+![](plots/extdistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
+![](plots/extdistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/extdistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+![](plots/extdistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+![](plots/extdistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+![](plots/extdistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
