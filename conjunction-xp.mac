@@ -238,64 +238,63 @@ Arguments are
 plot_independence_conjunction_introduction(n, s, a1, b1, a2, b2, ymax) := block([smp1, m1, v1, smp2, m2, v2, smp, m, v], smp1: random_beta(a1, b1, n), m1: mean(smp1), v1: var(smp1), smp2: random_beta(a2, b2, n), m2: mean(smp2), v2: var(smp2), smp: create_list(pa*pb, pa, smp1, pb, smp2), m: mean(smp), v: var(smp), draw2d(title = printf(false, "Independence Conjuction Introduction (smp size: ~a*~a, hist size: ~a)", n, n, s), xlabel = "Probability", ylabel = "Density", histogram_description(smp, nclasses = [0, 1, s], key = printf(false, "μ=~,4f, σ²=~,8f", m, v), frequency = density), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a1, b1, m1, v1), color = blue, explicit(pdf_beta(x, a1, b1), x, 0, 1), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a2, b2, m2, v2), color = green, explicit(pdf_beta(x, a2, b2), x, 0, 1), yrange = [0, ymax]), keepfloat);
 
 /* Histograms of independence-based conjunction introduction */
+plot_independence_conjunction_introduction(1000, 100, 6b3, 3b3, 1b3, 1b2, 100);
 plot_independence_conjunction_introduction(1000, 100, 500, 300, 100, 10, 30);
 plot_independence_conjunction_introduction(1000, 100, 50, 30, 100, 10, 20);
 plot_independence_conjunction_introduction(1000, 100, 3, 1, 4, 1, 6);
 plot_independence_conjunction_introduction(1000, 100, 2, 1, 1, 2, 6);
 plot_independence_conjunction_introduction(1000, 100, 1, 1, 1, 1, 6);
 
-/* NEXT: try to make even more conservative, maybe try convex
-distrolet instead of flat */
+/*
+Plot on a chart
+- pdf of beta distribution of premises
+- histogram of conclusion of uniform-distrolet-based conjunction introduction.
 
-/* NEXT: compare Dirac vs uniform distrolet for very high confidence
-of premises, and average strengths. */
-
-/* Histogram of the product of two beta distributions (most
-conservative assumption) */
-random_uniform_distrolet(pa, pb) := if lower(pa, pb) < upper(pa, pb) then random_continuous_uniform(lower(pa, pb), upper(pa, pb)) else upper(pa, pb);
-histogram(create_list(random_uniform_distrolet(pa, pb), pa, random_beta(50, 30, 1000), pb, random_beta(100, 10, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
-
-/* Histogram of the product of two Bayes' priors (most conservative assumption) */
-histogram(create_list(random_uniform_distrolet(pa, pb), pa, random_beta(1, 1, 1000), pb, random_beta(1, 1, 1000)), nclasses = [0, 1, 50], frequency = density), keepfloat;
-
-histogram(random_continuous_uniform(0.2, 0.6, 1000000), nclasses = [0, 1, 50], frequency = density), keepfloat;
-
-/* NEXT: use discrete distribution instead of re-inventing the wheel
-https://maxima.sourceforge.io/docs/manual/Package-distrib.html#Functions-and-Variables-for-discrete-distributions
+Arguments are
+- n: sample size of each beta distribution
+- s: number of histogram bins
+- a1: alpha parameter of first premise
+- b1: beta parameter of first premise
+- a2: alpha parameter of second premise
+- b2: beta parameter of second premise
+- ymax: maximum range of the y axis
 */
+random_uniform_distrolet(pa, pb) := block([l, u], l: lower(pa, pb), u: upper(pa, pb), if l < u then random_continuous_uniform(l, u) else u);
+plot_unidistrolet_conjunction_introduction(n, s, a1, b1, a2, b2, ymax) := block([smp1, m1, v1, smp2, m2, v2, smp, m, v], smp1: random_beta(a1, b1, n), m1: mean(smp1), v1: var(smp1), smp2: random_beta(a2, b2, n), m2: mean(smp2), v2: var(smp2), smp: create_list(random_uniform_distrolet(pa, pb), pa, smp1, pb, smp2), m: mean(smp), v: var(smp), draw2d(title = printf(false, "Uniform Distrolet Conjuction Introduction (smp size: ~a*~a, hist size: ~a)", n, n, s), xlabel = "Probability", ylabel = "Density", histogram_description(smp, nclasses = [0, 1, s], key = printf(false, "μ=~,4f, σ²=~,8f", m, v), frequency = density), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a1, b1, m1, v1), color = blue, explicit(pdf_beta(x, a1, b1), x, 0, 1), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a2, b2, m2, v2), color = green, explicit(pdf_beta(x, a2, b2), x, 0, 1), yrange = [0, ymax]), keepfloat);
 
-/* NEXT: use Stirling package instead of re-inventing the wheel
-https://maxima.sourceforge.io/docs/manual/Package-stirling.html#Package-stirling
+/* Histograms of uniform distrolet based conjunction introduction */
+plot_unidistrolet_conjunction_introduction(1000, 100, 6b3, 3b3, 1b3, 1b2, 100);
+plot_unidistrolet_conjunction_introduction(1000, 100, 500, 300, 100, 10, 30);
+plot_unidistrolet_conjunction_introduction(1000, 100, 50, 30, 100, 10, 20);
+plot_unidistrolet_conjunction_introduction(1000, 100, 3, 1, 4, 1, 6);
+plot_unidistrolet_conjunction_introduction(1000, 100, 2, 1, 1, 2, 6);
+plot_unidistrolet_conjunction_introduction(1000, 100, 1, 1, 1, 1, 6);
+
+/*
+Plot on a chart
+- pdf of beta distribution of premises
+- histogram of conclusion of extreme-based conjunction introduction.
+
+Arguments are
+- n: sample size of each beta distribution
+- s: number of histogram bins
+- a1: alpha parameter of first premise
+- b1: beta parameter of first premise
+- a2: alpha parameter of second premise
+- b2: beta parameter of second premise
+- ymax: maximum range of the y axis
 */
+random_extreme_distrolet(pa, pb) := block([l, u], l: lower(pa, pb), u: upper(pa, pb), if random_bernoulli(0.5) = 1 then l else u);
+plot_extdistrolet_conjunction_introduction(n, s, a1, b1, a2, b2, ymax) := block([smp1, m1, v1, smp2, m2, v2, smp, m, v], smp1: random_beta(a1, b1, n), m1: mean(smp1), v1: var(smp1), smp2: random_beta(a2, b2, n), m2: mean(smp2), v2: var(smp2), smp: create_list(random_extreme_distrolet(pa, pb), pa, smp1, pb, smp2), m: mean(smp), v: var(smp), draw2d(title = printf(false, "Extreme Distrolet Conjuction Introduction (smp size: ~a*~a, hist size: ~a)", n, n, s), xlabel = "Probability", ylabel = "Density", histogram_description(smp, nclasses = [0, 1, s], key = printf(false, "μ=~,4f, σ²=~,8f", m, v), frequency = density), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a1, b1, m1, v1), color = blue, explicit(pdf_beta(x, a1, b1), x, 0, 1), key = printf(false, "α=~a, β=~a, μ=~,4f, σ²=~,8f", a2, b2, m2, v2), color = green, explicit(pdf_beta(x, a2, b2), x, 0, 1), yrange = [0, ymax]), keepfloat);
 
-/* NEXT: try to fit a generalized beta distribution */
+/* Histograms of extreme distrolet based conjunction introduction */
+plot_extdistrolet_conjunction_introduction(1000, 100, 6b3, 3b3, 1b3, 1b2, 100);
+plot_extdistrolet_conjunction_introduction(1000, 100, 500, 300, 100, 10, 30);
+plot_extdistrolet_conjunction_introduction(1000, 100, 50, 30, 100, 10, 20);
+plot_extdistrolet_conjunction_introduction(1000, 100, 3, 1, 4, 1, 6);
+plot_extdistrolet_conjunction_introduction(1000, 100, 2, 1, 1, 2, 6);
+plot_extdistrolet_conjunction_introduction(1000, 100, 1, 1, 1, 1, 6);
 
-/* NEXT: plot various components of mstpr while varying pa, pb and x.
-         The goal is to understand how their powers of n should
-         evolve, such as is it greater than 1. */
+/* NEXT: explore using A<->B instead of A->B */
 
-/* NEXT: Look into the simplification package
-https://maxima.sourceforge.io/docs/manual/Package-simplification.html#Package-simplification
-*/
-
-/* NEXT: Study how to simplify the sum of mstpr, or gpcpr who knows */
-
-/* NEXT: Possibly study the stats package
-https://maxima.sourceforge.io/docs/manual/Package-stats.html#Package-stats
-*/
-
-/* NEXT: Possibly study the Zeilberger package
-https://maxima.sourceforge.io/docs/manual/Package-zeilberger.html#Package-zeilberger
-*/
-
-/* NEXT: Possibly study the Integration package
-https://maxima.sourceforge.io/docs/manual/Integration.html#Integration
-*/
-
-/* NEXT: Possibly study Sums, Products and Series
-https://maxima.sourceforge.io/docs/manual/Sums-Products-and-Series.html#Sums-Products-and-Series
-*/
-
-/* NEXT: reformulate mstpr using δt instead of n */
-
-/* NEXT: maybe attempt to come up with Riemann integral with pa=pb=1/2 */
+/* NEXT: explore using various TVs, not just with null confidence, or A<->B */
