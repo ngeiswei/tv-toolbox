@@ -886,10 +886,32 @@ the latter, the extreme distrolets, one may notice a spike at 0.  This
 is because when the first order sampled probabilities sum up to less
 than one, zero is selected as concluding probability half of the time.
 
+In the next plots, the premises have respectively one positive and one
+negative evidence.
+
 ![](plots/independence-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
 
+Contrary to the previous case, the concluding variances, 0.03552852
+for the independence assumption, 0.03872038 for the uniform distrolets
+and 0.04822294 for the extreme distrolets, are all below that of their
+premises, which are approximately 0.05.  All concluding second order
+distributions are shifted to the left.
+
+Finally, these last plots show the concluding distributions when the
+premises have null confidence.
+
 ![](plots/independence-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
+
+Like above, all concluding variances are less than the variances of
+the premises, and all concluding second order distributions are
+shifted to the left.  Clearly these second order distributions would
+corresponds to simple truth values with a positive count of positive
+and total evidence, while no observation has ever been made.
+
+To conclude, it seems that the structure of a composite predicate,
+like a conjunction of two predicates, by itself provides evidence, not
+only direct observation.
