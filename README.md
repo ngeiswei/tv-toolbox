@@ -819,30 +819,44 @@ distribution.
 
 What we would like to see is how much variance in the concluding
 distribution the distrolets bring vs using the independence
-assumption.
+assumption.  To that end we produce for each pair of premises, ranging
+from high to low confidence, three plots, one with independence
+assumption (Dirac delta distrolet), a second derived from the extra
+premise `A -> B` with null confidence, i.e. a uniform distrolet with
+the admissible range constrained by probability theory, a third
+obtained from replacing the uniform distrolet by a bimodal
+distribution with two Dirac deltas at its lower and upper admissible
+extremities.  The later is hoped to emulate the most conservative
+conjunction introduction, producing conclusions with the maximum
+variance.
 
-Let us start by showing plots obtained from the product, i.e. making
-the independence assumption.  In all plots, the blue and green curves
-indicate the PDFs of the premises, while the red histogram indicates
-the PDF of the conclusion.
+In all plots, the blue and green curves indicate the PDFs of the
+premises, while the red histogram indicates the PDF of the conclusion.
+We start with premises with high confidences (α=6000 and β=3000 for
+the first premise, α=1000 and β=100 for the second premise).
 
 ![](plots/independence-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
-![](plots/independence-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
-![](plots/independence-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
-![](plots/independence-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
-![](plots/independence-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
-![](plots/independence-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
-
 ![](plots/unidistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
-![](plots/unidistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
-![](plots/unidistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
-![](plots/unidistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
-![](plots/unidistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
-![](plots/unidistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
-
 ![](plots/extdistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
+
+One can observe NEXT
+
+![](plots/independence-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/unidistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+
+![](plots/independence-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+![](plots/unidistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+
+![](plots/independence-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+![](plots/unidistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+
+![](plots/independence-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+![](plots/unidistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+
+![](plots/independence-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
+![](plots/unidistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
