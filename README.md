@@ -870,6 +870,15 @@ substantially reduced (α=50 and β=30 for the first premise).
 
 The same phenomenon is still observed albeit less acutely.
 
+The next plots consider premises with 4 positive and 4 negative pieces
+of evidence for both premises.
+
+![](plots/independence-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
+![](plots/unidistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
+![](plots/extdistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
+
+NEXT
+
 The next plots consider premises with only positive evidence and very
 low confidences.
 
@@ -899,8 +908,8 @@ and 0.04822294 for the extreme distrolets, are all below that of their
 premises, which are approximately 0.05.  All concluding second order
 distributions are shifted to the left.
 
-Finally, these last plots show the concluding distributions when the
-premises have null confidence.
+These next plots show the concluding distributions when the premises
+have null confidence.
 
 ![](plots/independence-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
@@ -912,6 +921,33 @@ shifted to the left.  Clearly these second order distributions would
 corresponds to simple truth values with a positive count of positive
 and total evidence, while no observation has ever been made.
 
+Let us push the experiment even further by considering other priors,
+start with Jeffreys's.
+
+![](plots/independence-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
+![](plots/unidistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
+![](plots/extdistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
+
+NEXT
+
+Then let us consider a prior somewhere between Jeffreys and Haldane
+with α=β=0.1.
+
+![](plots/independence-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
+![](plots/unidistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
+![](plots/extdistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
+
+NEXT
+
+Finally let us consider a prior that is getting even closer to the
+Haldane prior with α=β=0.01.
+
+![](plots/independence-conjunction-introduction-a1_0.01_b1_0.01_a2_0.01_b2_0.01.png)
+![](plots/unidistrolet-conjunction-introduction-a1_0.01_b1_0.01_a2_0.01_b2_0.01.png)
+![](plots/extdistrolet-conjunction-introduction-a1_0.01_b1_0.01_a2_0.01_b2_0.01.png)
+
+NEXT
+
 To conclude, it seems that the structure of a composite predicate,
-like a conjunction of two predicates, by itself provides evidence, not
-only direct observation.
+like a conjunction of two predicates, by itself provides evidence,
+alongside direct observations.
