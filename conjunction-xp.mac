@@ -4,6 +4,12 @@ load(distrib)$ /* pdf_beta, etc */
 load(descriptive)$ /* histogram, mean, var */
 load(stringproc)$ /* printf */
 
+/* Convert strength and confidence into alpha and beta */
+count_to_confidence(c) := c / (c + 1);
+confidence_to_count(c) := c / (1 - c);
+stv_to_alpha(strength, confidence) := block([cnt, pc, prior_alpha], cnt: confidence_to_count(confidence), pc: strength*cnt, prior_alpha: 1, prior_alpha + pc);
+stv_to_beta(strength, confidence) := block([cnt, nc, prior_beta], cnt: confidence_to_count(confidence), nc: (1-strength)*c, prior_alpha: 1, prior_alpha + nc);
+
 /* Big float precision */
 fpprec:51;
 
