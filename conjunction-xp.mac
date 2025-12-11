@@ -315,4 +315,4 @@ plot_extdistrolet_conjunction_introduction(1000, 100, 0.01, 0.01, 0.01, 0.01, 11
 
 /* NEXT: explore using A<->B instead of A->B */
 
-/* NEXT: explore using various TVs, not just with null confidence, or A<->B */
+/* NEXT: explore various TVs with non null confidence for A<->B or A->B */
