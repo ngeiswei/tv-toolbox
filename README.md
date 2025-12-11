@@ -922,13 +922,17 @@ corresponds to simple truth values with a positive count of positive
 and total evidence, while no observation has ever been made.
 
 Let us push the experiment even further by considering other priors,
-start with Jeffreys's.
+start with Jeffreys'.
 
 ![](plots/independence-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
 ![](plots/unidistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
 
-NEXT
+For all three cases (independence, uniform and extreme), the resulting
+variances, around 0.07, are smaller than that the variances of the
+premises, even more so than with a Bayes' prior.  Note that the
+resulting mean, around 0.23, remains close to 0.25.  Overall the
+results make sense.
 
 Then let us consider a prior somewhere between Jeffreys and Haldane
 with α=β=0.1.
@@ -937,7 +941,11 @@ with α=β=0.1.
 ![](plots/unidistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
 
-NEXT
+The resulting means, around 0.22, are drifting a bit away from 0.25.
+One may notice that the means of premises are around 0.47 instead of
+0.5, likely due to some floating point number calculation
+imprecisions, so that might explain it.  But overall the results still
+make sense.
 
 Finally let us consider a prior that is getting even closer to the
 Haldane prior with α=β=0.01.
@@ -948,6 +956,7 @@ Haldane prior with α=β=0.01.
 
 NEXT
 
-To conclude, it seems that the structure of a composite predicate,
-like a conjunction of two predicates, by itself provides evidence,
-alongside direct observations.
+To conclude, it interestingly seems that the structure of a composite
+predicate, like a conjunction of two predicates, by itself provides
+some forms of evidence.  In other words, evidence can be obtained not
+just from direct observations but from composite structures as well.
