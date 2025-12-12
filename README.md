@@ -755,17 +755,17 @@ reformulated as
 ```
 A ≞ TVa
 B ≞ TVb
-A -> B ≞ TVab
+A → B ≞ TVab
 ⊢
 A ∧ B ≞ TVAB
 ```
 
 This formulation generalizes the one in the section above, which can
 be recovered by setting `TVab = <1, 0>`, representing the absence of
-knowledge about `A -> B`.
+knowledge about `A → B`.
 
 If `TVab = <1, 0>`, the sampling process to estimate the second order
-distribution associated to `TVAB` will still account for `A -> B` but
+distribution associated to `TVAB` will still account for `A → B` but
 consider a beta distribution prior, such as the Bayes' prior, to
 sample from.
 
@@ -822,7 +822,7 @@ distribution the distrolets bring vs using the independence
 assumption.  To that end we produce for each pair of premises, ranging
 from high to low confidence, three plots, one with independence
 assumption (Dirac delta distrolet), a second derived from the extra
-premise `A -> B` with null confidence, i.e. a uniform distrolet with
+premise `A → B` with null confidence, i.e. a uniform distrolet with
 the admissible range constrained by probability theory, a third
 obtained from replacing the uniform distrolet by a bimodal
 distribution with two Dirac deltas at its lower and upper admissible
@@ -970,12 +970,12 @@ meaning the inference rule for conjunction becomes
 ```
 A ≞ TVa
 B ≞ TVb
-A <-> B ≞ TVab
+A↔B ≞ TVab
 ⊢
-A ∧ B ≞ TVAB
+A∧B ≞ TVAB
 ```
 
-The semantics of `A <-> B` corresponds, in probability terms, to
+The semantics of `A↔B` corresponds, in probability terms, to
 
 ```
 P(A∧B|A∨B)
@@ -1015,7 +1015,7 @@ The procedure to obtain `pAB` is therefore going to be as follows
 3. Sample `pab ~ TVab` (within valid bounds)
 4. Calculate `pAB = (pa*pab + pb*pab) / (1 + pab)`
 
-Let us consider that assuming that `A <-> B` is completely unknown is
+Let us consider that assuming that `A↔B` is completely unknown is
 equivalent to assuming a Bayes's prior over `TVab`, thus with a
 uniform second order distribution.  We still need to sample `TVab` so
 that `pAB` is within valid bounds.  To that end let us derive the
@@ -1031,8 +1031,26 @@ According to [DeepSeek](bound-proof-deepseek.org), we get
 max(pa+pb-1, 0) <= pab <= min(pa/pb, pb/pa)
 ```
 
-Let us plot pAB with respect to pab and vice versa for various values
-of pa and pb.
+We did not go through its log to verify if its reasoning is correct.
+But let us however plot `pAB` with respect to `pab` and vice versa for
+various values of `pa` and `pb` while maintaining `pAB` and `pab`
+within their valid bounds.
 
 ![](plots/pAB-wrt-pab.png)
 ![](plots/pab-wrt-pAB.png)
+
+It is clear that the plots of `pAB` with respect to `pab` perfectly
+mirror the plots of `pab` with respect to `pAB`, bounds included, thus
+the lower and upper bounds of `pab` inferred by DeepSeek are likely
+correct.
+
+Note that since the function mapping `pab` to `pAB` is not linear,
+building the second order distribution of `A∧B` via sampling `pab`
+(then mapping `pab` to `pAB`) according to `A↔B` is going to yield
+different results than sampling according to `A→B`.  Indeed, the
+relationship between `A→B` and `A∧B` is linear while the relationship
+between `A↔B` and `A∧B` is not.
+
+NEXT: plot second order distributions of
+      1. `A↔B` to `A∧B` given values of `pa` and `pb`
+      2. `A`, `B`, `A↔B` to `A∧B`.
