@@ -1034,5 +1034,5 @@ max(pa+pb-1, 0) <= pab <= min(pa/pb, pb/pa)
 Let us plot pAB with respect to pab and vice versa for various values
 of pa and pb.
 
-![](plot/pAB-wrt-pab.png)
-![](plot/pab-wrt-pAB.png)
+![](plots/pAB-wrt-pab.png)
+![](plots/pab-wrt-pAB.png)
