@@ -1025,15 +1025,14 @@ bounds of `pab` given the bounds of `pAB` recalled below
 max(pa+pb-1, 0) <= pAB <= min(pa, pb)
 ```
 
-
-Corresponding to the final result
+According to [DeepSeek](bound-proof-deepseek.org), we get
 
 ```
 max(pa+pb-1, 0) <= pab <= min(pa/pb, pb/pa)
 ```
 
-NEXT: plot `pAB = (pa*pab + pb*pab) / (1 + pab)` w.r.t. `pab`
-      (within bounds `max(pa+pb-1, 0) <= pab <= min(pa/pb, pb/pa)`)
+Let us plot pAB with respect to pab and vice versa for various values
+of pa and pb.
 
-NEXT: plot `pab = pAB / (pa + pb - pAB)` w.r.t. `pAB`.
-      (within bounds `max(pa+pb-1, 0) <= pAB <= min(pa, pb)`)
+![](plot/pAB-wrt-pab.png)
+![](plot/pab-wrt-pAB.png)
