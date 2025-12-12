@@ -975,13 +975,14 @@ A↔B ≞ TVab
 A∧B ≞ TVAB
 ```
 
-The semantics of `A↔B` corresponds, in probability terms, to
+The semantics of `A↔B` corresponds, in probabilistic terms, to
 
 ```
 P(A∧B|A∨B)
 ```
 
-Let us assume that the first order probabilities sampled as follows
+Let us assume that the first order probabilities are sampled as
+follows
 
 ```
 pa ~ TVa
@@ -1008,18 +1009,18 @@ pa*pab + pb*pab = pAB * (1 + pab)
 pAB = (pa*pab + pb*pab) / (1 + pab)
 ```
 
-The procedure to obtain `pAB` is therefore going to be as follows
+The procedure to obtain `pAB` is therefore going to be
 
 1. Sample `pa ~ TVa`
 2. Sample `pb ~ TVb`
 3. Sample `pab ~ TVab` (within valid bounds)
 4. Calculate `pAB = (pa*pab + pb*pab) / (1 + pab)`
 
-Let us consider that assuming that `A↔B` is completely unknown is
-equivalent to assuming a Bayes's prior over `TVab`, thus with a
-uniform second order distribution.  We still need to sample `TVab` so
-that `pAB` is within valid bounds.  To that end let us derive the
-bounds of `pab` given the bounds of `pAB` recalled below
+Let us assign a Bayes' prior over the second order distribution over
+`TVab` when `A↔B` is completely unknown, that is a uniform second
+order distribution.  We still need to sample `TVab` so that `pAB` is
+within valid bounds.  To that end we attempt to derive the bounds of
+`pab` given the bounds of `pAB` recalled below
 
 ```
 max(pa+pb-1, 0) <= pAB <= min(pa, pb)
@@ -1031,10 +1032,10 @@ According to [DeepSeek](bound-proof-deepseek.org), we get
 max(pa+pb-1, 0) <= pab <= min(pa/pb, pb/pa)
 ```
 
-We did not go through its log to verify if its reasoning is correct.
-But let us however plot `pAB` with respect to `pab` and vice versa for
+We did not go through its log to verify that its reasoning is correct.
+Let us however plot `pAB` with respect to `pab` and vice versa for
 various values of `pa` and `pb` while maintaining `pAB` and `pab`
-within their valid bounds.
+within their supposedly valid bounds.
 
 ![](plots/pAB-wrt-pab.png)
 ![](plots/pab-wrt-pAB.png)
