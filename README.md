@@ -964,8 +964,9 @@ just from direct observations but from composite structures as well.
 ### Express Dependencies with Equivalence instead of Implication
 
 Let us explore a variation where the extra premise to capture
-dependence is formulated using Equivalence rather that Implication,
-meaning the inference rule for conjunction becomes
+dependence is formulated using Equivalence rather that Implication (as
+suggested in [Ben's document](PLN_AND_Confidence_Framework.md.pdf)).
+In this case the inference rule for conjunction becomes
 
 ```
 A ≞ TVa
