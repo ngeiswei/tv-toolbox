@@ -316,3 +316,21 @@ plot_extdistrolet_conjunction_introduction(1000, 100, 0.01, 0.01, 0.01, 0.01, 11
 /* NEXT: explore using A<->B instead of A->B */
 
 /* NEXT: explore various TVs with non null confidence for A<->B or A->B */
+
+/* Plot pAB = (pa*pab + pb*pab) / (1 + pab) w.r.t. pab within bounds
+   max(pa+pb-1, 0) <= pab <= min(pa/pb, pb/pa) */
+pABf(pa, pb, pab) := (pa*pab+pb*pab)/(1+pab);
+pab_lower(pa, pb) := max(pa+pb-1, 0);
+pab_upper(pa, pb) := min(pa/pb, pb/pa);
+plot_pAB_wrt_pab(pa1, pb1, pa2, pb2, pa3, pb3, pa4, pb4, pa5, pb5) := block([l1, u1, l2, u2], l1: pab_lower(pa1, pb1), u1: pab_upper(pa1, pb1), l2: pab_lower(pa2, pb2), u2: pab_upper(pa2, pb2), l3: pab_lower(pa3, pb3), u3: pab_upper(pa3, pb3), l4: pab_lower(pa4, pb4), u4: pab_upper(pa4, pb4), l5: pab_lower(pa5, pb5), u5: pab_upper(pa5, pb5), draw2d(title = "pAB=(pa*pab+pb*pab)/(1+pab) w.r.t. pab where pa=P(A), pb=P(B)", xlabel = "pab=P(A∧B|A∨B)", ylabel = "pAB=P(A∧B)", xrange = [0, 1], yrange = [0, 1], key_pos=top_left, key = printf(false, "pa=~a, pb=~a", pa1, pb1), color = blue, explicit(pABf(pa1, pb1, pab), pab, l1, u1), key = printf(false, "pa=~a, pb=~a", pa2, pb2), color = green, explicit(pABf(pa2, pb2, pab), pab, l2, u2), key = printf(false, "pa=~a, pb=~a", pa3, pb3), color = red, explicit(pABf(pa3, pb3, pab), pab, l3, u3), key = printf(false, "pa=~a, pb=~a", pa4, pb4), color = purple, explicit(pABf(pa4, pb4, pab), pab, l4, u4), key = printf(false, "pa=~a, pb=~a", pa5, pb5), color = orange, explicit(pABf(pa5, pb5, pab), pab, l5, u5)));
+
+/* Plot pAB wrt pab for various values of pa and pb */
+plot_pAB_wrt_pab(0.9, 0.8, 0.2, 0.7, 0.5, 0.5, 0.5, 0.1, 0.9, 0.1);
+
+/* Plot pab = pAB / (pa + pb - pAB) w.r.t. pAB within bounds
+   max(pa+pb-1, 0) <= pAB <= min(pa, pb)`) */
+pabf(pa, pb, pAB) := pAB / (pa + pb - pAB);
+plot_pab_wrt_pAB(pa1, pb1, pa2, pb2, pa3, pb3, pa4, pb4, pa5, pb5) := block([l1, u1, l2, u2], l1: lower(pa1, pb1), u1: upper(pa1, pb1), l2: lower(pa2, pb2), u2: upper(pa2, pb2), l3: lower(pa3, pb3), u3: upper(pa3, pb3), l4: lower(pa4, pb4), u4: upper(pa4, pb4), l5: lower(pa5, pb5), u5: upper(pa5, pb5), draw2d(title = "pab=pAB/(pa+pb-pAB) w.r.t. pAB where pa=P(A), pb=P(B)", xlabel = "pAB=P(A∧B)", ylabel = "pab=P(A∧B|A∨B)", xrange = [0, 1], yrange = [0, 1], key_pos=top_left, key = printf(false, "pa=~a, pb=~a", pa1, pb1), color = blue, explicit(pabf(pa1, pb1, pab), pab, l1, u1), key = printf(false, "pa=~a, pb=~a", pa2, pb2), color = green, explicit(pabf(pa2, pb2, pab), pab, l2, u2), key = printf(false, "pa=~a, pb=~a", pa3, pb3), color = red, explicit(pabf(pa3, pb3, pab), pab, l3, u3), key = printf(false, "pa=~a, pb=~a", pa4, pb4), color = purple, explicit(pAB(pa4, pb4, pab), pab, l4, u4), key = printf(false, "pa=~a, pb=~a", pa5, pb5), color = orange, explicit(pabf(pa5, pb5, pab), pab, l5, u5)));
+
+/* Plot pAB wrt pab for various values of pa and pb */
+plot_pab_wrt_pAB(0.9, 0.8, 0.2, 0.7, 0.5, 0.5, 0.5, 0.1, 0.9, 0.1);
