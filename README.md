@@ -1053,6 +1053,10 @@ different results than sampling according to `A→B`.  Indeed, the
 relationship between `A→B` and `A∧B` is linear while the relationship
 between `A↔B` and `A∧B` is not.
 
-NEXT: plot second order distributions of
-      1. `A↔B` to `A∧B` given values of `pa` and `pb`
-      2. `A`, `B`, `A↔B` to `A∧B`.
+![](plots/pAB-distrolet-n_1M-s_100_pa_0.9-pb_0.8.png)
+![](plots/pAB-distrolet-n_1M-s_100_pa_0.2-pb_0.7.png)
+![](plots/pAB-distrolet-n_1M-s_100_pa_0.5-pb_0.5.png)
+![](plots/pAB-distrolet-n_1M-s_100_pa_0.5-pb_0.1.png)
+![](plots/pAB-distrolet-n_1M-s_100_pa_0.9-pb_0.1.png)
+
+NEXT: plot second order distributions of `A`, `B`, `A↔B` to `A∧B`.
