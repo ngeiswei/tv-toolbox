@@ -1059,4 +1059,14 @@ between `A↔B` and `A∧B` is not.
 ![](plots/pAB-distrolet-n_1M-s_100_pa_0.5-pb_0.1.png)
 ![](plots/pAB-distrolet-n_1M-s_100_pa_0.9-pb_0.1.png)
 
-NEXT: plot second order distributions of `A`, `B`, `A↔B` to `A∧B`.
+NEXT
+
+![](plots/equdistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
+![](plots/equdistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+![](plots/equdistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
+![](plots/equdistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
+![](plots/equdistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
+![](plots/equdistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+![](plots/equdistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
+![](plots/equdistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
+![](plots/equdistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
