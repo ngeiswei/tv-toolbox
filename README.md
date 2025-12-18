@@ -877,7 +877,13 @@ of evidence for both premises.
 ![](plots/unidistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
 
-NEXT
+As before, using the uniform distrolet provides a larger variance, how
+the resulting concluding distribution is now quite far from a beta
+distribution as it has a bell like shape that, unlike with beta
+distribution, is cut a third of the way left.  This would badly fit a
+beta distribution, which is problematic if we wish to keep simple
+truth values all the time.  This will have to be studied in the
+future.
 
 The next plots consider premises with only positive evidence and very
 low confidences.
@@ -954,12 +960,15 @@ Haldane prior with α=β=0.01.
 ![](plots/unidistrolet-conjunction-introduction-a1_0.01_b1_0.01_a2_0.01_b2_0.01.png)
 ![](plots/extdistrolet-conjunction-introduction-a1_0.01_b1_0.01_a2_0.01_b2_0.01.png)
 
-NEXT
+The concluding distributions, in all three cases, is now almost
+completely equivalent to Bernoulli distributions, where the densities
+are split between completely zero or completely one with means around
+0.25.
 
 To conclude, it interestingly seems that the structure of a composite
 predicate, like a conjunction of two predicates, by itself provides
 some forms of evidence.  In other words, evidence can be obtained not
-just from direct observations but from composite structures as well.
+just from direct observations but from structures as well.
 
 ### Express Dependencies with Equivalence instead of Implication
 
@@ -1051,7 +1060,9 @@ building the second order distribution of `A∧B` via sampling `pab`
 (then mapping `pab` to `pAB`) according to `A↔B` is going to yield
 different results than sampling according to `A→B`.  Indeed, the
 relationship between `A→B` and `A∧B` is linear while the relationship
-between `A↔B` and `A∧B` is not.
+between `A↔B` and `A∧B` is not.  To see how they differ let us plot
+the distrolets associated to `A↔B` and `A∧B` for various first order
+probabilities of `A` and `B`.
 
 ![](plots/pAB-distrolet-n_1M-s_100_pa_0.9-pb_0.8.png)
 ![](plots/pAB-distrolet-n_1M-s_100_pa_0.2-pb_0.7.png)
@@ -1059,31 +1070,97 @@ between `A↔B` and `A∧B` is not.
 ![](plots/pAB-distrolet-n_1M-s_100_pa_0.5-pb_0.1.png)
 ![](plots/pAB-distrolet-n_1M-s_100_pa_0.9-pb_0.1.png)
 
-NEXT
+Across all plots, the distrolets associated to `A∧B`, in red, look
+like they are quadratically increasing.  We anticipate that this will
+have the effect of shifting the means of the concluding distributions
+to the right.  Let us plot various concluding distributions for
+difference simple truth values to examin that.  For better comparison
+we also replot the concluding distribution obtained with `A→B` as
+extra premise.
 
 ![](plots/unidistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_6000_b1_3000_a2_1000_b2_100.png)
 
+Already one can see a slight increase in the means, with 0.6210 when
+using `A→B` and 0.6227 when using `A↔B`.  The resulting distribution
+when using `A↔B` also retain the quadratic increase.  The variance of
+the distribution obtain using `A↔B` is also a tiny bit greater,
+0.00073951 with `A↔B` vs 0.00073803 with `A→B`.
+
 ![](plots/unidistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_500_b1_300_a2_100_b2_10.png)
+
+In these two plots above the concluding distributions look visually
+identical but again the mean obtained with `A↔B`, 0.5819, is greater
+than the mean obtained with `A→B`, 0.5793.  This could be however due
+to the fact that the samples picked in the `A↔B` experiment for `A`
+and `B` also have larger means, respectively 0.6256 and 0.9093 with
+`A↔B` and respectively 0.6248 and 0.9090 with `A→B`.  The variances
+however follow another trend, being greater with `A→B`, 0.00122727,
+than with `A↔B`, 0.00119035.
 
 ![](plots/unidistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_50_b1_30_a2_100_b2_10.png)
 
+In the two plots above the mean obtained with `A↔B`, 0.5813, is
+actually less than that obtained with `A→B`, 0.5813.  That could be
+explained however by differences in means of the samples obtained from
+the premises `A` and `B` as above.  It is unclear at this point.  The
+variance obtained with `A↔B` is also less than the one obtained with
+`A→B`.
+
 ![](plots/unidistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_5_b1_5_a2_5_b2_5.png)
+
+The plots above involve premises with lower counts, 4 positive and 4
+negative counts each.  The difference in means is more significant,
+being 0.2776 with `A↔B` and 0.2472 wth `A→B`.  The variance with
+`A↔B`, 0.02338096, is also greater than the variance with `A→B`,
+0.02266180, but could be from a difference of variances in the
+premises.
 
 ![](plots/unidistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_3_b1_1_a2_4_b2_1.png)
 
+Once again the mean obtained with `A↔B` is greater than the one
+obtained with `A→B`.  The variance obtained with `A↔B` is less than
+the one obtained with `A→B`.
+
 ![](plots/unidistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_2_b1_1_a2_1_b2_2.png)
+
+Once again we observe that the mean obtained with `A↔B` is greater
+than the one obtained with `A→B`.  This time the variance obtained
+with `A↔B` is greater than one obtained with `A→B`.
 
 ![](plots/unidistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_1_b1_1_a2_1_b2_1.png)
 
+Same thing again, greater mean with `A↔B` than `A→B`.  The variance
+obtained with `A↔B` is less than the variance obtained with `A→B`.  At
+this point there seems a clear pattern for the mean but no pattern for
+the variance.
+
 ![](plots/unidistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_0.5_b1_0.5_a2_0.5_b2_0.5.png)
 
+Again, greater mean with `A↔B` than `A→B`.  The variance with `A↔B` is
+greater than the variance with `A→B` this time.
+
 ![](plots/unidistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
 ![](plots/equdistrolet-conjunction-introduction-a1_0.1_b1_0.1_a2_0.1_b2_0.1.png)
+
+Finally, the mean with `A↔B` is greater than the one with `A→B` and
+the variance with `A↔B` is also greater than the one with `A→B`.
+
+Over the 9 pairs of plots above, the mean obtained with `A↔B` is
+greater than the one obtained with `A→B` 8 times, which is unlikely
+due to chance.  However the variance obtained with `A↔B` is greater
+than the one obtained with `A→B` only 5 times, which could be due to
+chance.
+
+Thus we can conclude that using equivalence instead of implication is
+unlikely to have an impact on the variance of the concluding
+distribution.  However the means is likely a bit greater when using
+equivalence.  It is unclear from these experiments which rule is
+preferable.
